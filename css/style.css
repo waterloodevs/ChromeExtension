@@ -3,6 +3,11 @@ body {
     height: 500px;
 }
 
+.fixed-row-bottom {
+    position: fixed;
+    bottom: 0;
+}
+
 .nav {
   overflow: hidden;
 }
