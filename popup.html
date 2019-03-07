@@ -22,67 +22,64 @@
 </head>
 <body>
 
-<nav class="navbar">
-    <div class="navbar-nav mr-auto">
-        <a class="navbar-brand">
-            <img src="images/logo.png" width="40" height="40" alt="Kino">
-        </a>
-    </div>
-    <div class="mx-auto"><span>Home</span></div>
-    <div class="navbar-nav ml-auto">
-        <li class="nav-item">
-            <a class="nav-link" href="#">
-                <img src="images/profile.png" width="30" height="30" alt="Profile">
-            </a>
-        </li>
-    </div>
-</nav>
+<div class="container">
 
-
-
-<nav class="navbar navbar-dark bg-dark">
-
-
-        <ui class="navbar-nav mx-auto">
-        <li class="nav-item">
+    <nav class="navbar">
+        <div class="navbar-nav mr-auto">
+            <li class="nav-item">
             <a class="nav-link">
-                <img src="images/notifications.png" width="20"
-                     height="20" alt="Home">
+                <img src="images/logo.png" width="40" height="40" alt="Kino">
             </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link">
-                <img src="images/stores.png" width="20"
-                     height="20" alt="Stores">
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#">
-                <img src="images/wallet.png" width="20"
-                     height="20" alt="Wallet">
-            </a>
-        </li>
-        </ui>
+            </li>
+        </div>
+        <div class="mx-auto"><span>Home</span></div>
+        <div class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <img src="images/profile.png" width="25" height="25" alt="Profile">
+                </a>
+            </li>
+        </div>
+    </nav>
+
+    <div id="notifications-page" class="tab-page">
+        notifactions
     </div>
-</nav>
+    <div id="stores-page" class="tab-page active">
+        stores
+    </div>
+    <div id="wallet-page" class="tab-page">
+        wallet
+    </div>
 
 
-<div class="nav">
-    <button id="notifications" class="tab-button">Notifcations</button>
-    <button id="stores" class="tab-button">Stores</button>
-    <button id="wallet" class="tab-button">Wallet</button>
+    <nav class="navbar fixed-bottom">
+        <div class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link tab-button" id="notifications" href="#">
+                    <img src="images/notifications.png" width="20"
+                         height="20" alt="Home">
+                </a>
+            </li>
+        </div>
+        <div class="navbar-nav mx-auto">
+            <li class="nav-item">
+                <a class="nav-link tab-button" id="stores" href="#">
+                    <img src="images/stores.png" width="20"
+                         height="20" alt="Stores">
+                </a>
+            </li>
+        </div>
+        <div class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link tab-button" id="wallet" href="#">
+                    <img src="images/wallet.png" width="20"
+                         height="20" alt="Wallet">
+                </a>
+            </li>
+        </div>
+    </nav>
+
 </div>
-
-
-<div id="notifications-page" class="tab-page active">
-    notifactions
-</div>
-<div id="stores-page" class="tab-page">
-    stores
-</div>
-<div id="wallet-page" class="tab-page default-page">
-    wallet
-</div>
-
 </body>
 </html>
