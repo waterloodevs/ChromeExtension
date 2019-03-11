@@ -3,7 +3,7 @@ import requests
 import json
 import psycopg2
 import psycopg2.extras
-from flask import Flask, render_template, request, redirect, url_for, abort
+from flask import Flask, render_template, request, redirect, url_for, abort, g
 from flask import jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import JSON
@@ -11,9 +11,17 @@ from flask_login import LoginManager, current_user, \
     login_user, logout_user, login_required, UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_httpauth import HTTPBasicAuth
+import firebase_admin
+from firebase_admin import credentials, auth, messaging
+from flask_httpauth import HTTPTokenAuth
 
+http_auth = HTTPTokenAuth(scheme='Token')
+
+cred = credentials.Certificate('kino-extension-firebase-adminsdk-mrn7d-cca5ca5e4c.json')
+default_app = firebase_admin.initialize_app(cred)
 
 DATABASE_URL = 'postgresql://postgres:postgres@localhost:5432/postgres'
+
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
@@ -32,39 +40,44 @@ class User(db.Model):
 
     __tablename__ = "users"
 
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False)
+    uid = db.Column(db.Integer, primary_key=True, nullable=False)
+    email = db.Column(db.String, unique=True, nullable=False)
     balance = db.Column(db.Integer, nullable=False)
     transactions = db.Column(JSON, nullable=False)
+    mobile_app = db.Column(db.Boolean, nullable=False)
 
-    def __init__(self, email, password, balance=0, transactions={}):
+    def __init__(self, uid, email, balance=0, transactions={}, mobile_app=False):
+        self.uid = uid
         self.email = email
-        self.password_hash = generate_password_hash(password)
-        self.id = self.__generate_id()
         self.balance = balance
         self.transactions = transactions
-
-    @staticmethod
-    def __generate_id():
-        # TODO
-        return 12345
-
-    def verify_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        self.mobile_app = mobile_app
 
     def __repr__(self):
         return "email: {}, balance: {}"\
             .format(self.email, self.balance)
 
 
+@http_auth.verify_token
+def verify_token(fb_id_token):
+    try:
+        g.uid = get_uid(fb_id_token)
+        return True
+    except:
+        return False
+
+
+def get_uid(fb_id_token):
+    decoded_token = auth.verify_id_token(fb_id_token)
+    uid = decoded_token['uid']
+    return uid
+
+
 @app.route('/register', methods=['POST'])
+@http_auth.login_required
 def register():
-    email = request.form['email']
-    password = request.form['password']
-    if User.query.filter_by(email=email).first() is not None:
-        return jsonify({"Error": "Email already exists"}), 403
-    user = User(email=email, password=password)
+    email = auth.get_user(g.uid).getEmail()
+    user = User(uid=g.uid, email=email)
     db.session.add(user)
     try:
         db.session.commit()
@@ -75,44 +88,37 @@ def register():
 
 
 @app.route('/')
+@http_auth.login_required
 def index():
     return jsonify({"Message": "Welcome to the Kino Api"}), 200
 
 
-@app.route('/login', methods=['POST'])
-def login():
-    email = request.form['email']
-    password = request.form['password']
-    user = User.query.filter_by(email=email).first()
-    if not user:
-        return jsonify({"Error": "User does not exist"}), 403
-    if not user.verify_password(password):
-        return jsonify({"Error": "Incorrect Password"}), 403
-    return '', 200
-
-
-@app.route('/logout')
-def logout():
-    return
-
-
 @app.route('/stores')
+@http_auth.login_required
 def stores():
+    user = User.query.filter_by(uid=g.uid).first()
     return
 
 
 @app.route('/balance')
+@http_auth.login_required
 def balance():
+    user = User.query.filter_by(uid=g.uid).first()
     return
 
 
 @app.route('/transactions')
+@http_auth.login_required
 def transactions():
+    user = User.query.filter_by(uid=g.uid).first()
     return
 
 
 @app.route('/affiliate_link/<url>/<id>')
+@http_auth.login_required
 def affiliate_link():
+    user = User.query.filter_by(uid=g.uid).first()
+
     url = request.args.get('url')
     id = request.args.get('id')
     # generate the affiliate url
