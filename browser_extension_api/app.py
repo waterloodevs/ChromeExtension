@@ -32,26 +32,16 @@ class User(db.Model):
 
     __tablename__ = "users"
 
-    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    uid = db.Column(db.Integer, primary_key=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False)
     balance = db.Column(db.Integer, nullable=False)
     transactions = db.Column(JSON, nullable=False)
 
-    def __init__(self, email, password, balance=0, transactions={}):
+    def __init__(self, uid, email, balance=0, transactions={}):
+        self.uid = uid
         self.email = email
-        self.password_hash = generate_password_hash(password)
-        self.id = self.__generate_id()
         self.balance = balance
         self.transactions = transactions
-
-    @staticmethod
-    def __generate_id():
-        # TODO
-        return 12345
-
-    def verify_password(self, password):
-        return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
         return "email: {}, balance: {}"\
@@ -60,11 +50,11 @@ class User(db.Model):
 
 @app.route('/register', methods=['POST'])
 def register():
+    uid = verify_id_token(id_token)
     email = request.form['email']
-    password = request.form['password']
     if User.query.filter_by(email=email).first() is not None:
         return jsonify({"Error": "Email already exists"}), 403
-    user = User(email=email, password=password)
+    user = User(uid=uid, email=email)
     db.session.add(user)
     try:
         db.session.commit()
