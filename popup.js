@@ -90,7 +90,7 @@ function getData(user) {
             "Authorization": "Token " + idToken
         }})
         .then(function(response) {
-            if (response.status !== 201) {
+            if (response.status !== 200) {
                 console.log('Looks like there was a problem. Status Code: ' + response.status);
                 return;
             }
@@ -109,6 +109,14 @@ function getData(user) {
     });
 }
 
+
+function storeData(data) {
+    var stores = data['stores'];
+    var balance = data['balance'];
+    var transactions = data['transactions'];
+    chrome.storage.local.set({'stores': stores, 'balance': balance, 'transactions': transactions}, function () {
+    });
+}
 
 /**
  * Handles the sign in button press.
@@ -129,6 +137,16 @@ function toggleSignIn() {
             alert('Please enter a password.');
             return;
         }
+
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                // When a user logs in -
+                // Get list of featured stores, balance and transactions from backend
+                // Store in chrome storage
+                var data = getData(user);
+                storeData(data);
+            }});
+
         // Sign in with email and pass.
         // [START authwithemail]
         firebase.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
@@ -169,6 +187,9 @@ function handleSignUp() {
         if (user) {
             // Send new user details to backend
             sendUser(user);
+            // Get and store data into local storage
+            var data = getData(user);
+            storeData(data);
             //window.location.href = 'home.html';
         }});
 
@@ -241,17 +262,6 @@ function initApp() {
         document.getElementById('quickstart-verify-email').disabled = true;
         // [END_EXCLUDE]
         if (user) {
-
-            // When a user logs in -
-            // Get list of featured stores, balance and transactions from backend
-            // Store in chrome storage
-            var data = getData(user);
-            var stores = data['stores'];
-            var balance = data['balance'];
-            var transactions = data['transactions'];
-            chrome.storage.local.set({'stores': stores, 'balance': balance, 'transactions': transactions}, function () {
-            });
-
             // User is signed in.
             var displayName = user.displayName;
             //var email = user.email;
