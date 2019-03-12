@@ -42,7 +42,7 @@ class User(db.Model):
     transactions = db.Column(JSON, nullable=False)
     mobile_app = db.Column(db.Boolean, nullable=False)
 
-    def __init__(self, uid, email, balance=0, transactions={}, mobile_app=False):
+    def __init__(self, uid, email, balance=0, transactions=[], mobile_app=False):
         self.uid = uid
         self.email = email
         self.balance = balance
@@ -89,25 +89,15 @@ def index():
     return jsonify({"Message": "Welcome to the Kino Api"}), 200
 
 
-@app.route('/stores')
+@app.route('/data')
 @http_auth.login_required
-def stores():
+def data():
     user = User.query.filter_by(uid=g.uid).first()
-    return
-
-
-@app.route('/balance')
-@http_auth.login_required
-def balance():
-    user = User.query.filter_by(uid=g.uid).first()
-    return
-
-
-@app.route('/transactions')
-@http_auth.login_required
-def transactions():
-    user = User.query.filter_by(uid=g.uid).first()
-    return
+    return jsonify({
+        "stores": STORES,
+        "balance": user.balance,
+        "transactions": user.transactions
+    }), 200
 
 
 @app.route('/affiliate_link/<url>/<id>')

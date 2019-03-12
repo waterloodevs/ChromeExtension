@@ -78,6 +78,38 @@ function sendUser(user) {
     });
 }
 
+
+function getData(user) {
+    url = apiRoot + '/data';
+    user.getIdToken().then(function(idToken) {
+        var idToken = idToken;
+        fetch(url, {
+        method: 'get',
+        headers: {
+            "Content-type": "application/json",
+            "Authorization": "Token " + idToken
+        }})
+        .then(function(response) {
+            if (response.status !== 201) {
+                console.log('Looks like there was a problem. Status Code: ' + response.status);
+                return;
+            }
+            // Examine the text in the response
+            response.json().then(function(data) {
+                console.log(data);
+                return data;
+            });
+        }
+        )
+        .catch(function(err) {
+            console.log('Fetch Error :-S', err);
+        });
+    }).catch(function(error) {
+       console.log('Unable to get idToken of current user', error)
+    });
+}
+
+
 /**
  * Handles the sign in button press.
  */
@@ -213,9 +245,10 @@ function initApp() {
             // When a user logs in -
             // Get list of featured stores, balance and transactions from backend
             // Store in chrome storage
-            var stores = ['Amazon', 'Ebay', 'Walmart', 'McDonalds', 'Popbottle'];
-            var balance = 100;
-            var transactions = [];
+            var data = getData(user);
+            var stores = data['stores'];
+            var balance = data['balance'];
+            var transactions = data['transactions'];
             chrome.storage.local.set({'stores': stores, 'balance': balance, 'transactions': transactions}, function () {
             });
 
