@@ -7,10 +7,6 @@ from flask import Flask, render_template, request, redirect, url_for, abort, g
 from flask import jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import JSON
-from flask_login import LoginManager, current_user, \
-    login_user, logout_user, login_required, UserMixin
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_httpauth import HTTPBasicAuth
 import firebase_admin
 from firebase_admin import credentials, auth, messaging
 from flask_httpauth import HTTPTokenAuth
