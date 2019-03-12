@@ -41,13 +41,21 @@ class User(db.Model):
     balance = db.Column(db.Integer, nullable=False)
     transactions = db.Column(JSON, nullable=False)
     mobile_app = db.Column(db.Boolean, nullable=False)
+    fcm_token = db.Column(db.String)
 
-    def __init__(self, uid, email, balance=0, transactions=[], mobile_app=False):
+    def __init__(self,
+                 uid,
+                 email,
+                 balance=0,
+                 transactions=[],
+                 mobile_app=False,
+                 fcm_token=None):
         self.uid = uid
         self.email = email
         self.balance = balance
         self.transactions = transactions
         self.mobile_app = mobile_app
+        self.fcm_token = fcm_token
 
     def __repr__(self):
         return "email: {}, balance: {}"\
@@ -83,6 +91,22 @@ def register():
     return '', 201
 
 
+@app.route('/update_fcm_token', methods=['POST'])
+@http_auth.login_required
+def update_fcm_token():
+    if 'fcm_token' not in request.get_json():
+        return '', 500
+    fcm_token = request.get_json()['fcm_token']
+    user = User.query.filter_by(uid=g.uid).first()
+    user.fcm_token = fcm_token
+    try:
+        db.session.commit()
+    except AssertionError as err:
+        db.session.rollback()
+        return '', 500
+    return '', 201
+
+
 @app.route('/')
 @http_auth.login_required
 def index():
@@ -109,6 +133,17 @@ def affiliate_link():
     id = request.args.get('id')
     # generate the affiliate url
     return jsonify({"url": url}), 200
+
+
+def notify_client(uid, transaction):
+    user = User.query.filter_by(uid=uid).first()
+    message = messaging.Message(
+        data={'transaction': transaction},
+        token=user.fcm_token,
+    )
+    response = messaging.send(message)
+    # Response is a message ID string.
+    print('Successfully sent message:', response)
 
 
 if __name__ == '__main__':
