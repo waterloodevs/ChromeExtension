@@ -47,31 +47,34 @@ firebase.initializeApp(config);
  * When signed in, we also authenticate to the Firebase Realtime Database.
  */
 
+const apiRoot = 'http://127.0.0.1:5000'
 
-function sendUser() {
-
-    url = ''
-    fetch(url, {
-    method: 'get',
-    headers: {
-      "Content-type": "application/json",
-      "Authorization": "Token 12345"
-    },
-    body: 'foo=bar&lorem=ipsum'
-    })
-    .then(function(response) {
-        if (response.status !== 200) {
-            console.log('Looks like there was a problem. Status Code: ' + response.status);
-            return;
+function sendUser(user) {
+    url = apiRoot + '/register';
+    user.getIdToken().then(function(idToken) {
+        var idToken = idToken;
+        fetch(url, {
+        method: 'post',
+        headers: {
+            "Content-type": "application/json",
+            "Authorization": "Token " + idToken
+        }})
+        .then(function(response) {
+            if (response.status !== 201) {
+                console.log('Looks like there was a problem. Status Code: ' + response.status);
+                return;
+            }
+            // Examine the text in the response
+            response.json().then(function(data) {
+                console.log(data);
+            });
         }
-        // Examine the text in the response
-        response.json().then(function(data) {
-            console.log(data);
+        )
+        .catch(function(err) {
+            console.log('Fetch Error :-S', err);
         });
-    }
-    )
-    .catch(function(err) {
-        console.log('Fetch Error :-S', err);
+    }).catch(function(error) {
+       console.log('Unable to get idToken of current user', error)
     });
 }
 
@@ -129,6 +132,14 @@ function handleSignUp() {
         alert('Please enter a password.');
         return;
     }
+
+    firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+            // Send new user details to backend
+            sendUser(user);
+            //window.location.href = 'home.html';
+        }});
+
     // Sign in with email and pass.
     // [START createwithemail]
     firebase.auth().createUserWithEmailAndPassword(email, password).catch(function (error) {
@@ -143,10 +154,6 @@ function handleSignUp() {
         }
         console.log(error);
         // [END_EXCLUDE]
-
-        // Send new user details to backend
-
-
     });
     // [END createwithemail]
 }

@@ -36,7 +36,7 @@ class User(db.Model):
 
     __tablename__ = "users"
 
-    uid = db.Column(db.Integer, primary_key=True, nullable=False)
+    uid = db.Column(db.String, primary_key=True, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
     balance = db.Column(db.Integer, nullable=False)
     transactions = db.Column(JSON, nullable=False)
@@ -72,7 +72,7 @@ def get_uid(fb_id_token):
 @app.route('/register', methods=['POST'])
 @http_auth.login_required
 def register():
-    email = auth.get_user(g.uid).getEmail()
+    email = str(auth.get_user(g.uid).email)
     user = User(uid=g.uid, email=email)
     db.session.add(user)
     try:
