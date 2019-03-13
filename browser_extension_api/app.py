@@ -3,7 +3,7 @@ import requests
 import json
 import psycopg2
 import psycopg2.extras
-from flask import Flask, render_template, request, redirect, url_for, abort, g
+from flask import Flask, render_template, request, redirect, url_for, abort, g, Response
 from flask import jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import JSON
@@ -87,15 +87,18 @@ def register():
         db.session.commit()
     except AssertionError as err:
         db.session.rollback()
-        return '', 500
-    return '', 201
+        resp = Response(status=500)
+        resp.headers["Access-Control-Allow-Origin"] = "*"
+        resp.headers["Access-Control-Allow-Credentials"] = True
+        return resp
+    return Response(status=201)
 
 
 @app.route('/update_fcm_token', methods=['POST'])
 @http_auth.login_required
 def update_fcm_token():
     if 'fcm_token' not in request.get_json():
-        return '', 500
+        return Response(status=500)
     fcm_token = request.get_json()['fcm_token']
     user = User.query.filter_by(uid=g.uid).first()
     user.fcm_token = fcm_token
@@ -103,8 +106,8 @@ def update_fcm_token():
         db.session.commit()
     except AssertionError as err:
         db.session.rollback()
-        return '', 500
-    return '', 201
+        return Response(status=500)
+    return Response(status=201)
 
 
 @app.route('/')

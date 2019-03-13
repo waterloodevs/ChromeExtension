@@ -44,63 +44,12 @@ messaging.onTokenRefresh(function() {
         // Indicate that the new Instance ID token has not yet been sent to the
         // app server.
         // Send Instance ID token to app server.
-        let user = firebase.auth().currentUser;
-        sendFcmTokenToServer(user, refreshedToken);
+        var user = firebase.auth().currentUser;
+        sendFcmTokenToServer(user);
     }).catch(function(err) {
         console.log('Unable to retrieve refreshed token ', err);
     });
 });
-
-function getFcmToken() {
-    // Get Instance ID token. Initially this makes a network call, once retrieved
-    // subsequent calls to getToken will return from cache.
-    messaging.getToken().then(function(currentToken) {
-        if (currentToken) {
-            return currentToken;
-        } else {
-            // Show permission request.
-            console.log('No Instance ID token available. Request permission to generate one.');
-        }
-    }).catch(function(err) {
-        console.log('An error occurred while retrieving token. ', err);
-    });
-}
-
-// Send the Instance ID token your application server, so that it can:
-// - send messages back to this app
-// - subscribe/unsubscribe the token from topics
-function sendFcmTokenToServer(user, currentToken) {
-    console.log('Sending token to server...');
-    let url = apiRoot + '/update_fcm_token';
-    user.getIdToken().then(function(idToken) {
-        fetch(url, {
-            method: 'post',
-            headers: {
-                "Content-type": "application/json",
-                "Authorization": "Token " + idToken
-            },
-            body: JSON.stringify({
-                'fcm_token': currentToken
-            })
-        })
-        .then(function(response) {
-            if (response.status !== 201) {
-                console.log('Looks like there was a problem. Status Code: ' + response.status);
-                return;
-            }
-            // Examine the text in the response
-            response.json().then(function(data) {
-                console.log(data);
-            });
-        }
-        )
-        .catch(function(err) {
-            console.log('Fetch Error :-S', err);
-        });
-    }).catch(function(error) {
-       console.log('Unable to get idToken of current user', error)
-    });
-}
 
 function requestPermission() {
     console.log('Requesting permission...');
@@ -113,6 +62,53 @@ function requestPermission() {
     });
 }
 
+// Send the Instance ID token your application server, so that it can:
+// - send messages back to this app
+// - subscribe/unsubscribe the token from topics
+function sendFcmTokenToServer(user) {
+    requestPermission();
+    // Get Instance ID token. Initially this makes a network call, once retrieved
+    // subsequent calls to getToken will return from cache.
+    messaging.getToken().then(function(currentToken) {
+        if (currentToken) {
+            console.log('Sending token to server...');
+            var url = apiRoot + '/update_fcm_token';
+            user.getIdToken().then(function(idToken) {
+                fetch(url, {
+                    method: 'post',
+                    headers: {
+                        "Content-type": "application/json",
+                        "Authorization": "Token " + idToken
+                    },
+                    body: JSON.stringify({
+                        'fcm_token': currentToken
+                    })
+                })
+                .then(function(response) {
+                    if (response.status !== 201) {
+                        console.log('Looks like there was a problem. Status Code: ' + response.status);
+                        return;
+                    }
+                    // Examine the text in the response
+                    response.json().then(function(data) {
+                        console.log(data);
+                    });
+                }
+                )
+                .catch(function(err) {
+                    console.log('Fetch Error :-S', err);
+                });
+            }).catch(function(error) {
+               console.log('Unable to get idToken of current user', error)
+            });
+        } else {
+            // Show permission request.
+            console.log('No Instance ID token available. Request permission to generate one.');
+        }
+    }).catch(function(err) {
+        console.log('An error occurred while retrieving token. ', err);
+    });
+}
 
 /**
  * initApp handles setting up the Firebase context and registering
@@ -131,8 +127,8 @@ function requestPermission() {
 
 const apiRoot = 'http://127.0.0.1:5000'
 
-function sendUser(user) {
-    let url = apiRoot + '/register';
+function sendUserToServer(user) {
+    var url = apiRoot + '/register';
     user.getIdToken().then(function(idToken) {
         fetch(url, {
         method: 'post',
@@ -145,12 +141,7 @@ function sendUser(user) {
                 console.log('Looks like there was a problem. Status Code: ' + response.status);
                 return;
             }
-            // Examine the text in the response
-            response.json().then(function(data) {
-                console.log(data);
-            });
-        }
-        )
+        })
         .catch(function(err) {
             console.log('Fetch Error :-S', err);
         });
@@ -159,17 +150,8 @@ function sendUser(user) {
     });
 }
 
-function storeData(data) {
-    let stores = data['stores'];
-    let balance = data['balance'];
-    let transactions = data['transactions'];
-    chrome.storage.local.set({'stores': stores, 'balance': balance, 'transactions': transactions}, function () {
-    });
-}
-
-
-function getData(user) {
-    let url = apiRoot + '/data';
+function updateDataFromServer(user) {
+    var url = apiRoot + '/data';
     user.getIdToken().then(function(idToken) {
         fetch(url, {
         method: 'get',
@@ -184,7 +166,11 @@ function getData(user) {
             // Examine the text in the response
             response.json().then(function(data) {
                 console.log(data);
-                return data;
+                var stores = data['stores'];
+                var balance = data['balance'];
+                var transactions = data['transactions'];
+                chrome.storage.local.set({'stores': stores, 'balance': balance, 'transactions': transactions}, function () {
+                });
             });
         }
         )
@@ -195,7 +181,6 @@ function getData(user) {
        console.log('Unable to get idToken of current user', error)
     });
 }
-
 
 /**
  * Handles the sign in button press.
@@ -217,22 +202,18 @@ function toggleSignIn() {
             return;
         }
 
-        firebase.auth().onAuthStateChanged(function (user) {
-            if (user) {
-                // When a user logs in -
-                // Get list of featured stores, balance and transactions from backend
-                // Store in chrome storage
-                let data = getData(user);
-                storeData(data);
-            }});
-
-
         // TODO, no need for listeners for signin and signout, modify the code below to use
         //  .then before .catch -> have only one listener in initapp
 
         // Sign in with email and pass.
         // [START authwithemail]
-        firebase.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
+        firebase.auth().signInWithEmailAndPassword(email, password).then(function(){
+            // When a user logs in -
+            // Get list of featured stores, balance and transactions from backend
+            // Store in chrome storage
+            //var data = getDataFromServer(user);
+            //storeData(data);
+        }).catch(function (error) {
             // Handle Errors here.
             var errorCode = error.code;
             var errorMessage = error.message;
@@ -266,22 +247,20 @@ function handleSignUp() {
         return;
     }
 
-    firebase.auth().onAuthStateChanged(function (user) {
-        if (user) {
-            // Send new user details to backend
-            sendUser(user);
-            // Get and send FCM token to backend
-            let fcmToken = getFcmToken();
-            sendFcmTokenToServer(user, fcmToken);
-            // Get and store data into local storage
-            let data = getData(user);
-            storeData(data);
-            //window.location.href = 'home.html';
-        }});
-
     // Sign in with email and pass.
     // [START createwithemail]
-    firebase.auth().createUserWithEmailAndPassword(email, password).catch(function (error) {
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+    .then(function () {
+        var user = firebase.auth().currentUser;
+        // Send new user details to backend
+        sendUserToServer(user);
+        // Send FCM token to backend
+        sendFcmTokenToServer(user);
+        // Get and store data into local storage
+        updateDataFromServer(user);
+        //window.location.href = 'home.html';
+    })
+    .catch(function (error) {
         // Handle Errors here.
         var errorCode = error.code;
         var errorMessage = error.message;
@@ -365,7 +344,7 @@ function initApp() {
             }
             // [END_EXCLUDE]
 
-            window.location.href = 'home.html';
+            //window.location.href = 'home.html';
 
         } else {
             // User is signed out.

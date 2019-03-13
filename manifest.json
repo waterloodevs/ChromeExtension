@@ -19,8 +19,9 @@
       "cookies",
       "webNavigation",
       "webRequest",
-      "<all_urls>" ],
+      "<all_urls>",
+      "notifications"],
     "manifest_version": 2,
-    "content_security_policy": "script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'",
-    "gcm_sender_id": "103953800507"
+    "content_security_policy": "script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'"
+    //"gcm_sender_id": "103953800507"
   }
