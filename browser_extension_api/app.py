@@ -65,16 +65,23 @@ class User(db.Model):
 @http_auth.verify_token
 def verify_token(fb_id_token):
     try:
-        g.uid = get_uid(fb_id_token)
-        return True
-    except:
+        decoded_token = auth.verify_id_token(fb_id_token)
+        g.uid = decoded_token['uid']
+    except Exception as err:
         return False
+    return True
+
+# def get_uid(fb_id_token):
+#     decoded_token = auth.verify_id_token(fb_id_token)
+#     uid = decoded_token['uid']
+#     return uid
 
 
-def get_uid(fb_id_token):
-    decoded_token = auth.verify_id_token(fb_id_token)
-    uid = decoded_token['uid']
-    return uid
+@app.after_request
+def after_request(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Credentials"] = True
+    return response
 
 
 @app.route('/register', methods=['POST'])
