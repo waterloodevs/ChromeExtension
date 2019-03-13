@@ -26,9 +26,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 SSL_mode = 'allow'
 
 STORES = [
-    "www.amazon.com",
-    "www.walmart.com",
-    "www.ebay.com"
+    {'name': 'Amazon', 'url': 'www.amazon.com'},
+    {'name': 'Walmart', 'url': 'www.walmart.com'},
+    {'name': 'Ebay', 'url': 'www.ebay.com'}
 ]
 
 
@@ -43,13 +43,10 @@ class User(db.Model):
     mobile_app = db.Column(db.Boolean, nullable=False)
     fcm_token = db.Column(db.String)
 
-    def __init__(self,
-                 uid,
-                 email,
-                 balance=0,
-                 transactions=[],
-                 mobile_app=False,
-                 fcm_token=None):
+    def __init__(self, uid, email, balance=0, transactions=None,
+                 mobile_app=False, fcm_token=None):
+        if transactions is None:
+            transactions = []
         self.uid = uid
         self.email = email
         self.balance = balance
@@ -145,15 +142,31 @@ def affiliate_link():
     return jsonify({"url": url}), 200
 
 
-def notify_client(uid, transaction):
-    user = User.query.filter_by(uid=uid).first()
+def notify_client(user, transaction):
     message = messaging.Message(
+        notification={
+            "title": "title",
+            "body": "body"
+        },
         data={'transaction': transaction},
         token=user.fcm_token,
     )
     response = messaging.send(message)
     # Response is a message ID string.
-    print('Successfully sent message:', response)
+    print('Successfully sent message: ', response)
+
+
+def email_client(user, transaction):
+    return
+
+
+def new_transaction(uid, transaction):
+    user = User.query.filter_by(uid=uid).first()
+    if user is None:
+        raise Exception("Invalid uid for new transaction: {}".format(uid))
+    notify_client(user, transaction)
+    email_client(user, transaction)
+    return
 
 
 if __name__ == '__main__':

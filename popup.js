@@ -1,25 +1,3 @@
-// document.addEventListener('DOMContentLoaded', function () {
-//     let tabButtonsArray = document.getElementsByClassName("tab-button");
-//     [].forEach.call(tabButtonsArray, function (button) {
-//         button.addEventListener("click", function () {
-//             selectTab(button.id);
-//         });
-//     });
-// }, false);
-//
-//
-// function selectTab(id) {
-//     // Hide all tabs
-//     let i, tabPagesArray;
-//     tabPagesArray = document.getElementsByClassName("tab-page");
-//     for (i = 0; i < tabPagesArray.length; i++) {
-//         tabPagesArray[i].style.display = "none";
-//     }
-//     //Show the Selected Tab
-//     document.getElementById(id + "-page").style.display = "block";
-// }
-
-
 // Initialize Firebase
 var config = {
     apiKey: "AIzaSyD8BV1qrn_vgin_DlxfIdVsdmk8FPnqmeY",
@@ -38,17 +16,28 @@ const messaging = firebase.messaging();
 messaging.usePublicVapidKey('BJRkoCi2Qzx5jYe_qxL1hD2OkWAibd9xxxrRHz6Sn2IhUR2r1wNXK_YIBwy9GsQ58tPwpuI4wQVQhxZIvgRaXuU');
 
 // Callback fired if Instance ID token is updated.
-messaging.onTokenRefresh(function() {
-    messaging.getToken().then(function(refreshedToken) {
+messaging.onTokenRefresh(function () {
+    messaging.getToken().then(function (refreshedToken) {
         console.log('Token refreshed.');
-        // Indicate that the new Instance ID token has not yet been sent to the
-        // app server.
-        // Send Instance ID token to app server.
         var user = firebase.auth().currentUser;
-        sendFcmTokenToServer(user);
-    }).catch(function(err) {
+        if (user) {
+            sendFcmTokenToServer(user);
+        }
+    }).catch(function (err) {
         console.log('Unable to retrieve refreshed token ', err);
     });
+});
+
+// Handle incoming messages. Called when:
+// - a message is received while the app has focus
+// - the user clicks on an app notification created by a service worker
+//   `messaging.setBackgroundMessageHandler` handler.
+messaging.onMessage(function (payload) {
+    console.log('Message received. ', payload);
+    var user = firebase.auth().currentUser;
+    if (user) {
+        updateDataFromServer(user);
+    }
 });
 
 function requestPermission() {
@@ -56,7 +45,6 @@ function requestPermission() {
     messaging.requestPermission().then(function() {
       console.log('Notification permission granted.');
       // TODO(developer): Retrieve an Instance ID token for use with FCM.
-
     }).catch(function(err) {
       console.log('Unable to get permission to notify.', err);
     });
@@ -211,11 +199,16 @@ function toggleSignIn() {
             // When a user logs in -
             // Get list of featured stores, balance and transactions from backend
             // Store in chrome storage
-            //var data = getDataFromServer(user);
-            //storeData(data);
+            var user = firebase.auth().currentUser;
+            // Send FCM token to backend in case it was
+            // refreshed while the user was not logged in
+            sendFcmTokenToServer(user);
+            // Get and store data into local storage
+            updateDataFromServer(user);
+            //window.location.href = 'home.html';
         }).catch(function (error) {
             // Handle Errors here.
-            var errorCode = error.code;
+            var errorCode = error.code;1
             var errorMessage = error.message;
             // [START_EXCLUDE]
             if (errorCode === 'auth/wrong-password') {
