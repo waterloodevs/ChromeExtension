@@ -74,13 +74,6 @@ def verify_token(fb_id_token):
 #     return uid
 
 
-@app.after_request
-def after_request(response):
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Credentials"] = True
-    return response
-
-
 @app.route('/register', methods=['POST'])
 @http_auth.login_required
 def register():
@@ -91,10 +84,7 @@ def register():
         db.session.commit()
     except AssertionError as err:
         db.session.rollback()
-        resp = Response(status=500)
-        resp.headers["Access-Control-Allow-Origin"] = "*"
-        resp.headers["Access-Control-Allow-Credentials"] = True
-        return resp
+        return Response(status=500)
     return Response(status=201)
 
 
@@ -102,7 +92,7 @@ def register():
 @http_auth.login_required
 def update_fcm_token():
     if 'fcm_token' not in request.get_json():
-        return Response(status=500)
+        return jsonify(), 500
     fcm_token = request.get_json()['fcm_token']
     user = User.query.filter_by(uid=g.uid).first()
     user.fcm_token = fcm_token
@@ -110,8 +100,8 @@ def update_fcm_token():
         db.session.commit()
     except AssertionError as err:
         db.session.rollback()
-        return Response(status=500)
-    return Response(status=201)
+        return jsonify(), 500
+    return jsonify(), 201
 
 
 @app.route('/')
@@ -144,11 +134,18 @@ def affiliate_link():
 
 def notify_client(user, transaction):
     message = messaging.Message(
-        notification={
-            "title": "title",
-            "body": "body"
-        },
-        data={'transaction': transaction},
+        webpush=messaging.WebpushConfig(
+            notification=messaging.WebpushNotification(
+                title='$GOOG up 1.43% on the day',
+                body='$GOOG gained 11.80 points to close at 835.67, up 1.43% on the day.',
+                silent=True
+            ),
+        ),
+        # notification=messaging.Notification(
+        #     title="title",
+        #     body="body"
+        # ),
+        # data={'transaction': transaction},
         token=user.fcm_token,
     )
     response = messaging.send(message)

@@ -10,6 +10,34 @@ var config = {
   };
 firebase.initializeApp(config);
 
+// Retrieve an instance of Firebase Messaging so that it can handle background
+// messages.
+const messaging = firebase.messaging();
+// Handle incoming messages. Called when:
+// - a message is received while the app has focus
+// - the user clicks on an app notification created by a service worker
+//   `messaging.setBackgroundMessageHandler` handler.
+messaging.onMessage(function (payload) {
+    console.log('Message received. ', payload);
+    var user = firebase.auth().currentUser;
+    if (user) {
+        updateDataFromServer(user);
+    }
+});
+
+// Callback fired if Instance ID token is updated.
+messaging.onTokenRefresh(function () {
+    messaging.getToken().then(function (refreshedToken) {
+        console.log('Token refreshed.');
+        var user = firebase.auth().currentUser;
+        if (user) {
+            sendFcmTokenToServer(user);
+        }
+    }).catch(function (err) {
+        console.log('Unable to retrieve refreshed token ', err);
+    });
+});
+
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
       if (request.name == 'showNotification'){

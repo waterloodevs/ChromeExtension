@@ -20,22 +20,23 @@ firebase.initializeApp(config);
 // messages.
 const messaging = firebase.messaging();
 
-messaging.setBackgroundMessageHandler(function(payload) {
-    console.log('[firebase-messaging-sw.js] Received background message ', payload);
-    //var data = JSON.parse(payload);
-
-    // Call the updateDataFromServer if user is logged in
-
-    // Customize notification here
-    var notificationTitle = 'SW Title';
-    var notificationOptions = {
-        body: 'SW Body',
-        click_action: 'http://wwww.google.com'
-        //time_to_live: data.time_to_live,
-        //data: data.data,
-        //tag: data.tag
-    };
-    return self.registration.showNotification(
-        notificationTitle,
-        notificationOptions);
-});
+//messaging.setBackgroundMessageHandler(function(payload) {
+////    console.log('[firebase-messaging-sw.js] Received background message ', payload);
+////    //var data = JSON.parse(payload);
+////
+////    // Call the updateDataFromServer if user is logged in
+////    var user = firebase.auth().currentUser;
+////    if (user) {
+////        updateDataFromServer(user);
+////    }
+//
+//    //Customize notification here
+//
+//    return self.registration.showNotification('SW title', {
+//        body: 'SW Body',
+//        //click_action: 'http://wwww.google.com'
+//        //time_to_live: 1,
+//        data: 'data',
+//        //tag: 'tag'
+//    });
+//});

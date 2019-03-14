@@ -15,30 +15,6 @@ const messaging = firebase.messaging();
 // Add the public key generated from the console here.
 messaging.usePublicVapidKey('BJRkoCi2Qzx5jYe_qxL1hD2OkWAibd9xxxrRHz6Sn2IhUR2r1wNXK_YIBwy9GsQ58tPwpuI4wQVQhxZIvgRaXuU');
 
-// Callback fired if Instance ID token is updated.
-messaging.onTokenRefresh(function () {
-    messaging.getToken().then(function (refreshedToken) {
-        console.log('Token refreshed.');
-        var user = firebase.auth().currentUser;
-        if (user) {
-            sendFcmTokenToServer(user);
-        }
-    }).catch(function (err) {
-        console.log('Unable to retrieve refreshed token ', err);
-    });
-});
-
-// Handle incoming messages. Called when:
-// - a message is received while the app has focus
-// - the user clicks on an app notification created by a service worker
-//   `messaging.setBackgroundMessageHandler` handler.
-messaging.onMessage(function (payload) {
-    console.log('Message received. ', payload);
-    var user = firebase.auth().currentUser;
-    if (user) {
-        updateDataFromServer(user);
-    }
-});
 
 function requestPermission() {
     console.log('Requesting permission...');
@@ -77,12 +53,7 @@ function sendFcmTokenToServer(user) {
                         console.log('Looks like there was a problem. Status Code: ' + response.status);
                         return;
                     }
-                    // Examine the text in the response
-                    response.json().then(function(data) {
-                        console.log(data);
-                    });
-                }
-                )
+                })
                 .catch(function(err) {
                     console.log('Fetch Error :-S', err);
                 });
