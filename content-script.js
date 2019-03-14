@@ -17,30 +17,33 @@ function showNotification() {
             iframe.style.width = "300px";
             iframe.style.position = "fixed";
             iframe.style.top = "50px";
-            iframe.style.right = "0px";
+            iframe.style.right = "20px";
             iframe.style.zIndex = "9000000000000000000";
             iframe.frameBorder = "none";
-            //iframe.src = chrome.extension.getURL("popup.html");
+            iframe.appendChild(createTextNode = "Kino";
 
             var button = document.createElement('button');
             var t = document.createTextNode("Activate");
             button.appendChild(t);
-            //button.style.background = "black";
+            button.style.background = "#4C8FFB";
             button.style.borderStyle = "none";
             button.style.color = "white";
-            //button.style.padding =  "15px 32px";
-            //button.style."text-align" = "center";
+            //button.style.width = "100px";
+            button.style.padding = "5px 10px";
+            //button.style.text-align = "center";
             //button.style.text-decoration = none;
             //button.style.display =  "inline-block";
-            //button.style.fontSize = "16px";
-            button.style.height = "20px";
-            //button.style.width = "50px";
+            button.style.fontSize = "20px";
+            button.style.height = "40px";
             button.style.position = "fixed";
-            button.style.top = "100px";
-            button.style.right = "0px";
+            button.style.top = "90px";
+            button.style.right = "40px";
             button.style.zIndex = "9000000000000000009";
-            //button.frameBorder = "none";
-            //button.textContent = 'Activate';
+
+            //button.style.borderRadius = "2px";
+            button.style.fontWeight = "bold";
+            button.style.outline = "none";
+
             button.onclick = function() {
                 //iframe.style.display = "none";
                 //button.style.display = "none";

@@ -125,9 +125,7 @@ def data():
 @http_auth.login_required
 def affiliate_link():
     user = User.query.filter_by(uid=g.uid).first()
-
-    url = request.args.get('url')
-    id = request.args.get('id')
+    url = 'www.google.com'
     # generate the affiliate url
     return jsonify({"url": url}), 200
 

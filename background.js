@@ -64,7 +64,7 @@ chrome.runtime.onMessage.addListener(
                         }
                         // Examine the url in the response
                         response.json().then(function (data) {
-                            console.log(data);
+                            window.location.replace(data['url']);
                         });
                     }).catch(function (err) {
                         console.log('Fetch Error :-S', err);
