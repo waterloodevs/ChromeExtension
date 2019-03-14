@@ -7,7 +7,7 @@ var config = {
     projectId: "kino-extension",
     storageBucket: "kino-extension.appspot.com",
     messagingSenderId: "883319920768"
-  };
+};
 firebase.initializeApp(config);
 
 // Retrieve an instance of Firebase Messaging so that it can handle background
@@ -25,6 +25,8 @@ messaging.onMessage(function (payload) {
     }
 });
 
+
+//TODO: does this still fire when browser is closed?
 // Callback fired if Instance ID token is updated.
 messaging.onTokenRefresh(function () {
     messaging.getToken().then(function (refreshedToken) {
@@ -38,37 +40,46 @@ messaging.onTokenRefresh(function () {
     });
 });
 
+
 chrome.runtime.onMessage.addListener(
-  function(request, sender, sendResponse) {
-      if (request.name == 'showNotification'){
+    function (request, sender, sendResponse) {
+        if (request.name == 'notificationClicked') {
+            alert('clicked');
+            var user = firebase.auth().currentUser;
+            if (user) {
+                // when banner clicked, get api call for affiliate url
+                // Show activated page briefly
+                // Redirect to url page
+                var url = apiRoot + '/url';
+                user.getIdToken().then(function (idToken) {
+                    fetch(url, {
+                        method: 'get',
+                        headers: {
+                            "Content-type": "application/json",
+                            "Authorization": "Token " + idToken
+                        }
+                    }).then(function (response) {
+                        if (response.status !== 200) {
+                            console.log('Looks like there was a problem. Status Code: ' + response.status);
+                        }
+                        // Examine the url in the response
+                        response.json().then(function (data) {
+                            console.log(data);
+                        });
+                    }).catch(function (err) {
+                        console.log('Fetch Error :-S', err);
+                    });
+                }).catch(function (error) {
+                    console.log('Unable to get idToken of current user', error)
+                });
+            } else {
+                // when banner clicked, open popup for login
+                // after login, the popup home tab will show the details of the affiliate
+                // website you are on along with the activate button if not already activated
 
-          //chrome extensions inject custom ui
-
-
-          notificationId = 'notify'
-          chrome.notifications.create('reminder', {
-              type: 'basic',
-              iconUrl: 'https://img.icons8.com/material/4ac144/256/twitter.png',
-              title: 'title',
-              message: 'message',
-              requireInteraction: true
-          });
-          chrome.notifications.onClicked.addListener(function () {
-              alert('clicked');
-              var user = firebase.auth().currentUser;
-              if (user) {
-                    // when banner clicked, get api call for affiliate url
-                    // Show activated page briefly
-                    // Redirect to url page
-              }else {
-                    // when banner clicked, open popup for login
-                    // after login, the popup home tab will show the details of the affiliate
-                    // website you are on along with the activate button if not already activated
-              }
-              chrome.notifications.clear(notificationId);
-          });
-      }
-  });
+            }
+        }
+    });
 
 /**
  * initApp handles setting up the Firebase context and registering
@@ -85,12 +96,12 @@ chrome.runtime.onMessage.addListener(
  * When signed in, we also authenticate to the Firebase Realtime Database.
  */
 function initApp() {
-  // Listen for auth state changes.
-  firebase.auth().onAuthStateChanged(function(user) {
-    console.log('User state change detected from the Background script of the Chrome Extension:', user);
-  });
+    // Listen for auth state changes.
+    firebase.auth().onAuthStateChanged(function (user) {
+        console.log('User state change detected from the Background script of the Chrome Extension:', user);
+    });
 }
 
-window.onload = function() {
-  initApp();
+window.onload = function () {
+    initApp();
 };

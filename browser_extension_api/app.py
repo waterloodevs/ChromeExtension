@@ -121,7 +121,7 @@ def data():
     }), 200
 
 
-@app.route('/affiliate_link/<url>/<id>')
+@app.route('/url')
 @http_auth.login_required
 def affiliate_link():
     user = User.query.filter_by(uid=g.uid).first()
