@@ -40,11 +40,17 @@ messaging.onTokenRefresh(function () {
     });
 });
 
+const apiRoot = 'http://127.0.0.1:5000'
+
+
+function activatedNotification(){
+    alert("Activated!");
+}
+
 
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
         if (request.name == 'notificationClicked') {
-            alert('clicked');
             var user = firebase.auth().currentUser;
             if (user) {
                 // when banner clicked, get api call for affiliate url
@@ -64,7 +70,11 @@ chrome.runtime.onMessage.addListener(
                         }
                         // Examine the url in the response
                         response.json().then(function (data) {
-                            window.location.replace(data['url']);
+                            // redirect to new url
+                            chrome.tabs.update(sender.tab.id, {url: data.url}, function(){
+                                chrome.tabs.onUpdated.addListener(activatedNotification());
+                                chrome.storage.local.set({'activated': true}, function () {});
+                            });
                         });
                     }).catch(function (err) {
                         console.log('Fetch Error :-S', err);
