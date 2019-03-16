@@ -43,8 +43,17 @@ messaging.onTokenRefresh(function () {
 const apiRoot = 'http://127.0.0.1:5000'
 
 
-function activatedNotification(){
-    alert("Activated!");
+function notificationActivated(url){
+    chrome.storage.local.get('activated', function (result) {
+        var urls;
+        if (typeof result['activated'] == 'undefined') {
+            urls = [url];
+        }else{
+            urls = result['activated'];
+            urls.push(url);
+        }
+        chrome.storage.local.set({'activated': urls}, function () {});
+    });
 }
 
 
@@ -72,8 +81,7 @@ chrome.runtime.onMessage.addListener(
                         response.json().then(function (data) {
                             // redirect to new url
                             chrome.tabs.update(sender.tab.id, {url: data.url}, function(){
-                                chrome.tabs.onUpdated.addListener(activatedNotification());
-                                chrome.storage.local.set({'activated': true}, function () {});
+                                chrome.tabs.onUpdated.addListener(notificationActivated(request.url));
                             });
                         });
                     }).catch(function (err) {
@@ -105,7 +113,7 @@ chrome.runtime.onMessage.addListener(
  *
  * When signed in, we also authenticate to the Firebase Realtime Database.
  */
-function initApp() {
+function init() {
     // Listen for auth state changes.
     firebase.auth().onAuthStateChanged(function (user) {
         console.log('User state change detected from the Background script of the Chrome Extension:', user);
@@ -113,5 +121,5 @@ function initApp() {
 }
 
 window.onload = function () {
-    initApp();
+    init();
 };
