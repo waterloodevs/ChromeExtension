@@ -62,7 +62,7 @@ function showNotification() {
             button.textContent = "Activate";
             button.onclick = function() {
                 //this.parentNode.style.display = "none";
-                chrome.runtime.sendMessage({name: "notificationClicked"});
+                chrome.runtime.sendMessage({name: "notificationClicked", url: host});
             }
 
             //TODO: look at lolli source code, make it better

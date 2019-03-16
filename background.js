@@ -43,8 +43,18 @@ messaging.onTokenRefresh(function () {
 const apiRoot = 'http://127.0.0.1:5000'
 
 
-function activatedNotification(){
-    alert("Activated!");
+function activatedNotification(url){
+    alert("Activated: " + url);
+    chrome.storage.local.get('activated', function(result){
+        var urls;
+        if (result['activated'] == 'undefined') {
+            urls = [url];
+        } else {
+            urls = result['activated'];
+            urls.push(url);
+        }
+        chrome.storage.local.set({'activated': urls}, function () {});
+    });
 }
 
 
@@ -72,8 +82,7 @@ chrome.runtime.onMessage.addListener(
                         response.json().then(function (data) {
                             // redirect to new url
                             chrome.tabs.update(sender.tab.id, {url: data.url}, function(){
-                                chrome.tabs.onUpdated.addListener(activatedNotification());
-                                chrome.storage.local.set({'activated': true}, function () {});
+                                chrome.tabs.onUpdated.addListener(activatedNotification(request.url));
                             });
                         });
                     }).catch(function (err) {
