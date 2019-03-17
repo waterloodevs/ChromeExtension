@@ -1,11 +1,10 @@
-function showNotification() {
+function showNotification(host) {
     var stores = [
         {'name': 'Amazon', 'url': 'amazon.com'},
         {'name': 'Walmart', 'url': 'walmart.com'},
         {'name': 'Ebay', 'url': 'ebay.com'},
         {'name': 'Stackoverflow', 'url': 'stackoverflow.com'}
     ]
-    var host = window.location.host;
     var i;
     for (i = 0; i < stores.length; i++) {
         if (host.includes(stores[i].url)) {
@@ -77,9 +76,13 @@ function showNotification() {
 
 function init(){
     chrome.storage.local.get('activated', function (result) {
-        if (typeof result['activated'] == 'undefined') {
-            showNotification();
-        };
+        var urls = result['activated'];
+        var host = window.location.host;
+        if (urls.includes(host)) {
+            alert("already activated");
+        } else {
+            showNotification(host);
+        }
     });
 }
 
