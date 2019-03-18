@@ -13,7 +13,11 @@ function Wallet(){
     // Get transactions as well
 }
 
-function openCity(evt, cityName) {
+function openSettings(){
+
+}
+
+function openTab(Name) {
   // Declare all variables
   var i, tabcontent, tablinks;
 
@@ -34,21 +38,25 @@ function openCity(evt, cityName) {
   title.textContent = cityName;
 
   // Call the necessary javascript functions for the tab about to be shown
-  if (cityName == 'Stores'){
+  if (Name == 'Stores'){
         Stores();
-  } else if (cityName == 'Wallet'){
+  } else if (Name == 'Wallet'){
     Wallet();
-  } else if (cityName == 'Home'){
+  } else if (Name == 'Home'){
 
   }
 
   // Show the current tab, and add an "active" class to the button that opened the tab
   document.getElementById(cityName).style.display = "block";
-  evt.currentTarget.className += " active";
 }
 
 window.onload = function () {
+    document.getElementById('tablinks-1').addEventListener('click', openTab('Home'), false);
+    document.getElementById('tablinks-2').addEventListener('click', openTab('Stores'), false);
+    document.getElementById('tablinks-3').addEventListener('click', openTab('Wallet'), false);
+
+    document.getElementById('settings-right').addEventListener('click', openSettings(), false);
+
     // Get the element with id="defaultOpen" and click on it
     document.getElementById("defaultOpen").click();
-
 };
