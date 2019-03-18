@@ -10,7 +10,7 @@
     padding: 10px 10px;
 }
 
-.settings-left {
+#settings-left {
     border: 1px solid #ccc;
     float: left;
     width: 30px;
@@ -22,7 +22,7 @@
     font-size: 25px;
 }
 
-.settings-right {
+#settings-right {
     border: 1px solid #ccc;
     float: right;
     width: 30px;

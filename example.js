@@ -21,6 +21,8 @@ function openTab(Name) {
   // Declare all variables
   var i, tabcontent, tablinks;
 
+    alert(Name);
+
   // Get all elements with class="tabcontent" and hide them
   tabcontent = document.getElementsByClassName("tabcontent");
   for (i = 0; i < tabcontent.length; i++) {
@@ -35,28 +37,28 @@ function openTab(Name) {
 
   // Replace the title text
   var title = document.getElementById("title").firstChild;
-  title.textContent = cityName;
+  title.textContent = Name;
 
   // Call the necessary javascript functions for the tab about to be shown
-  if (Name == 'Stores'){
-        Stores();
-  } else if (Name == 'Wallet'){
-    Wallet();
-  } else if (Name == 'Home'){
-
-  }
+//  if (Name == 'Stores'){
+//        Stores();
+//  } else if (Name == 'Wallet'){
+//    Wallet();
+//  } else if (Name == 'Home'){
+//
+//  }
 
   // Show the current tab, and add an "active" class to the button that opened the tab
-  document.getElementById(cityName).style.display = "block";
+  document.getElementById(Name).style.display = "block";
 }
 
 window.onload = function () {
-    document.getElementById('tablinks-1').addEventListener('click', openTab('Home'), false);
-    document.getElementById('tablinks-2').addEventListener('click', openTab('Stores'), false);
-    document.getElementById('tablinks-3').addEventListener('click', openTab('Wallet'), false);
-
+//    document.getElementById("HomeButton").addEventListener('click', openTab('Home'), false);
+//    document.getElementById("StoresButton").addEventListener('click', openTab('Stores'), false);
+//    document.getElementById("WalletButton").addEventListener('click', openTab('Wallet'), false);
+//
     document.getElementById('settings-right').addEventListener('click', openSettings(), false);
 
-    // Get the element with id="defaultOpen" and click on it
-    document.getElementById("defaultOpen").click();
+    // click on default tab
+    document.getElementById("HomeButton").click();
 };
