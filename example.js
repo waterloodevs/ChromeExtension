@@ -1,7 +1,13 @@
 function Stores(){
     chrome.storage.local.get(['stores'], function (result) {
-        let stores = result['stores'];
-        document.getElementById("featured-stores").textContent = stores;
+        var names = Array();
+        var stores = result['stores'];
+        var length = stores.length;
+        for (var i = 0; i < length; i++) {
+            var name = stores[i].name;
+            names.push(name);
+        }
+        document.getElementById("featured-stores").textContent = names;
     });
 }
 
@@ -21,8 +27,6 @@ function openTab(Name) {
   // Declare all variables
   var i, tabcontent, tablinks;
 
-    alert(Name);
-
   // Get all elements with class="tabcontent" and hide them
   tabcontent = document.getElementsByClassName("tabcontent");
   for (i = 0; i < tabcontent.length; i++) {
@@ -39,26 +43,30 @@ function openTab(Name) {
   var title = document.getElementById("title").firstChild;
   title.textContent = Name;
 
-  // Call the necessary javascript functions for the tab about to be shown
-//  if (Name == 'Stores'){
-//        Stores();
-//  } else if (Name == 'Wallet'){
-//    Wallet();
-//  } else if (Name == 'Home'){
-//
-//  }
+  //Call the necessary javascript functions for the tab about to be shown
+  if (Name == 'Stores'){
+        Stores();
+  } else if (Name == 'Wallet'){
+        Wallet();
+  } else if (Name == 'Home'){
+
+  }
 
   // Show the current tab, and add an "active" class to the button that opened the tab
   document.getElementById(Name).style.display = "block";
 }
 
-window.onload = function () {
-//    document.getElementById("HomeButton").addEventListener('click', openTab('Home'), false);
-//    document.getElementById("StoresButton").addEventListener('click', openTab('Stores'), false);
-//    document.getElementById("WalletButton").addEventListener('click', openTab('Wallet'), false);
-//
-    document.getElementById('settings-right').addEventListener('click', openSettings(), false);
+function initApp(){
+    document.getElementById("HomeButton").addEventListener('click', function(){ openTab('Home'); }, false);
+    document.getElementById("StoresButton").addEventListener('click', function(){ openTab('Stores'); }, false);
+    document.getElementById("WalletButton").addEventListener('click', function(){ openTab('Wallet'); }, false);
+
+    document.getElementById('settings-right').addEventListener('click', openSettings, false);
 
     // click on default tab
     document.getElementById("HomeButton").click();
+}
+
+window.onload = function () {
+    initApp();
 };

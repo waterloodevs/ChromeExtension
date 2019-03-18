@@ -176,7 +176,9 @@ function toggleSignIn() {
             sendFcmTokenToServer(user);
             // Get and store data into local storage
             updateDataFromServer(user);
-            //window.location.href = 'home.html';
+
+            window.location.href = 'example.html';
+
         }).catch(function (error) {
             // Handle Errors here.
             var errorCode = error.code;1

@@ -17,6 +17,7 @@ const messaging = firebase.messaging();
 // - a message is received while the app has focus
 // - the user clicks on an app notification created by a service worker
 //   `messaging.setBackgroundMessageHandler` handler.
+//TODO: does this still fire when browser is closed?
 messaging.onMessage(function (payload) {
     console.log('Message received. ', payload);
     var user = firebase.auth().currentUser;
