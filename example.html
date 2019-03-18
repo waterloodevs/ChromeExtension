@@ -12,30 +12,34 @@
 
 <div id="container">
 
-    <div id="title">
-        <h1>Title</h1>
-    </div>
+    <div class="header">
+            <input type="image" src="images/profile.png" class="settings-left" value="Settings"
+               onclick="location.href='settings.html'"/>
+            <span id="title">Home</span>
+            <input type="image" src="images/profile.png" class="settings-right" value="Settings"
+               onclick="location.href='settings.html'"/>
+        </div>
 
     <!-- Tab content -->
     <div id="Home" class="tabcontent">
-        <h3>London</h3>
-        <p>London is the capital city of England.</p>
+        <p>You are not currently at a partnered store.</p>
+        <a href="stores.html">See Featured Stores</a>
     </div>
 
     <div id="Stores" class="tabcontent">
-        <h3>Paris</h3>
-        <p>Paris is the capital of France.</p>
+        <p>Earn 500 Kin for every $1 spent.</p>
+        <p id="featured-stores"></p>
     </div>
 
     <div id="Wallet" class="tabcontent">
-        <h3>Tokyo</h3>
-        <p>Tokyo is the capital of Japan.</p>
+        <p>Balance: <span id="balance">Unknown</span></p>
+        <p>Transactions: <span id="transactions">Empty</span></p>
     </div>
 
     <!-- Tab links -->
     <div class="tab">
-        <button class="tablinks" onclick="openCity(event, 'Home')" id="defaultOpen">Home</button>
-        <button class="tablinks" onclick="openCity(event, 'Stores')">Stores</button>
+        <button class="tablinks" onclick="openCity(event, 'Home')">Home</button>
+        <button class="tablinks" onclick="openCity(event, 'Stores')" id="defaultOpen">Stores</button>
         <button class="tablinks" onclick="openCity(event, 'Wallet')">Wallet</button>
     </div>
 

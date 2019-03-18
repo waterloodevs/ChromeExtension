@@ -222,7 +222,7 @@ function handleSignUp() {
         sendFcmTokenToServer(user);
         // Get and store data into local storage
         updateDataFromServer(user);
-        //window.location.href = 'home.html';
+        window.location.href = 'example.html';
     })
     .catch(function (error) {
         // Handle Errors here.
@@ -308,7 +308,7 @@ function initApp() {
             }
             // [END_EXCLUDE]
 
-            //window.location.href = 'home.html';
+            window.location.href = 'example.html';
 
         } else {
             // User is signed out.

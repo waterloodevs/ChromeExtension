@@ -4,12 +4,28 @@
     border: 1px solid #ccc;
 }
 
-#title {
-    position: relative;
-    width: 100%;
+.header {
     margin: 0 auto;
     text-align: center;
+    padding: 10px 10px;
+}
+
+.settings-left {
     border: 1px solid #ccc;
+    float: left;
+    width: 30px;
+    visibility: hidden;
+}
+
+#title {
+    border: 1px solid #ccc;
+    font-size: 25px;
+}
+
+.settings-right {
+    border: 1px solid #ccc;
+    float: right;
+    width: 30px;
 }
 
 /* Style the tab content */
