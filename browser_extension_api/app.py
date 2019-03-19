@@ -136,7 +136,7 @@ def affiliate_link():
     return jsonify({"url": url}), 200
 
 
-def notify_client(user, transaction):
+def notify_user(user, transaction):
     message = messaging.Message(
         webpush=messaging.WebpushConfig(
             notification=messaging.WebpushNotification(
@@ -157,7 +157,7 @@ def notify_client(user, transaction):
     print('Successfully sent message: ', response)
 
 
-def email_client(user, transaction):
+def email_user(user, transaction):
     return
 
 
@@ -165,8 +165,8 @@ def new_transaction(uid, transaction):
     user = User.query.filter_by(uid=uid).first()
     if user is None:
         raise Exception("Invalid uid for new transaction: {}".format(uid))
-    notify_client(user, transaction)
-    email_client(user, transaction)
+    notify_user(user, transaction)
+    email_user(user, transaction)
     return
 
 

@@ -19,6 +19,7 @@ const messaging = firebase.messaging();
 //   `messaging.setBackgroundMessageHandler` handler.
 //TODO: does this still fire when browser is closed?
 messaging.onMessage(function (payload) {
+    alert(payload);
     console.log('Message received. ', payload);
     var user = firebase.auth().currentUser;
     if (user) {
