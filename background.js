@@ -77,6 +77,7 @@ chrome.runtime.onMessage.addListener(
                     }).then(function (response) {
                         if (response.status !== 200) {
                             console.log('Looks like there was a problem. Status Code: ' + response.status);
+                            throw "Request to fetch affiliate link failed";
                         }
                         // Examine the url in the response
                         response.json().then(function (data) {
@@ -87,9 +88,11 @@ chrome.runtime.onMessage.addListener(
                         });
                     }).catch(function (err) {
                         console.log('Fetch Error :-S', err);
+                        throw "Unable to fetch affiliate link";
                     });
                 }).catch(function (error) {
                     console.log('Unable to get idToken of current user', error)
+                    throw "Unable to get idToken of current user";
                 });
             } else {
                 // when banner clicked, open popup for login

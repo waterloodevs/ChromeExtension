@@ -1,11 +1,43 @@
+function getStores(){
+    chrome.storage.local.get('stores', function (result) {
+        var stores;
+        if (typeof result['stores'] == 'undefined') {
+            const apiRoot = 'http://127.0.0.1:5000'
+            var url = apiRoot + '/stores';
+            fetch(url, {
+                method: 'get',
+                headers: {
+                    "Content-type": "application/json"
+                }})
+                .then(function(response) {
+                    if (response.status !== 200) {
+                        console.log('Looks like there was a problem. Status Code: ' + response.status);
+                        throw "Unable to fetch stores";
+                    }
+                    // Examine the text in the response
+                    response.json().then(function(data) {
+                        stores = data['stores'];
+                        var balance = data['balance'];
+                        var transactions = data['transactions'];
+                        chrome.storage.local.set({'stores': stores}, function () {});
+                    });
+                })
+                .catch(function(err) {
+                    console.log('Fetch Error :-S', err);
+                    throw "Unable to fetch stores";
+                });
+        }else{
+            alert(stores);
+            stores = result['stores'];
+        }
+    });
+    return stores;
+}
+
+
+
 function showNotification(host) {
-    var stores = [
-        {'name': 'Amazon', 'url': 'amazon.com'},
-        {'name': 'Walmart', 'url': 'walmart.com'},
-        {'name': 'Ebay', 'url': 'ebay.com'},
-        {'name': 'Stackoverflow', 'url': 'stackoverflow.com'}
-    ]
-    var i;
+    var stores = getStores();
     for (i = 0; i < stores.length; i++) {
         if (host.includes(stores[i].url)) {
             // Show notification banner

@@ -121,6 +121,11 @@ def data():
     }), 200
 
 
+@app.route('/stores')
+def data():
+    return jsonify({"stores": STORES}), 200
+
+
 @app.route('/url')
 @http_auth.login_required
 def affiliate_link():

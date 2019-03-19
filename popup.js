@@ -51,18 +51,21 @@ function sendFcmTokenToServer(user) {
                 .then(function(response) {
                     if (response.status !== 201) {
                         console.log('Looks like there was a problem. Status Code: ' + response.status);
-                        return;
+                        throw "Problem sending FCMToken to server";
                     }
                 })
                 .catch(function(err) {
                     console.log('Fetch Error :-S', err);
+                    throw "Problem sending user to server";
                 });
             }).catch(function(error) {
-               console.log('Unable to get idToken of current user', error)
+               console.log('Unable to get idToken of current user', error);
+               throw 'Unable to get idToken of current user';
             });
         } else {
             // Show permission request.
             console.log('No Instance ID token available. Request permission to generate one.');
+            throw 'No Instance ID token available. Request permission to generate one';
         }
     }).catch(function(err) {
         console.log('An error occurred while retrieving token. ', err);
@@ -98,14 +101,16 @@ function sendUserToServer(user) {
         .then(function(response) {
             if (response.status !== 201) {
                 console.log('Looks like there was a problem. Status Code: ' + response.status);
-                return;
+                throw 'Problem sending user to server';
             }
         })
         .catch(function(err) {
             console.log('Fetch Error :-S', err);
+            throw 'Problem sending user to server';
         });
     }).catch(function(error) {
-       console.log('Unable to get idToken of current user', error)
+       console.log('Unable to get idToken of current user', error);
+       throw 'Unable to get idToken of current user';
     });
 }
 
@@ -121,6 +126,7 @@ function updateDataFromServer(user) {
         .then(function(response) {
             if (response.status !== 200) {
                 console.log('Looks like there was a problem. Status Code: ' + response.status);
+                throw 'Unable to fetch data from server';
             }
             // Examine the text in the response
             response.json().then(function(data) {
@@ -135,9 +141,11 @@ function updateDataFromServer(user) {
         )
         .catch(function(err) {
             console.log('Fetch Error :-S', err);
+            throw 'Unable to fetch data from server';
         });
     }).catch(function(error) {
-       console.log('Unable to get idToken of current user', error)
+       console.log('Unable to get idToken of current user', error);
+       throw 'Unable to get idToken of current user';
     });
 }
 
