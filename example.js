@@ -6,7 +6,7 @@ var config = {
     projectId: "kino-extension",
     storageBucket: "kino-extension.appspot.com",
     messagingSenderId: "883319920768"
-  };
+};
 firebase.initializeApp(config);
 
 function Stores(){
@@ -31,13 +31,43 @@ function Wallet(){
 }
 
 function Settings(){
+
+    // Hide the nav bar
+    tab = document.getElementsByClassName("tab");
+    tab[0].style.display = "none";
+
+    // Make back button visible and add listener
+    document.getElementById("settings-left").style.visibility = "visible";
+    document.getElementById("settings-left").addEventListener('click', function(){
+        // Send back to home page
+        openTab('Home');
+        // Hide the back button
+        document.getElementById("settings-left").style.visibility = "hidden";
+        // Show the navigation bar again
+        tab[0].style.display = "block";
+        }, false);
+
     // Add listener for the logout button
-    document.getElementById("LogoutButton").addEventListener('click', function(){firebase.auth().signOut();}, false);
+    document.getElementById("LogoutButton").addEventListener('click', function(){
+        alert('logout');
+        firebase.auth().signOut();
+    }, false);
 }
 
 function openTab(Name) {
   // Declare all variables
   var i, tabcontent, tablinks;
+
+  //Call the necessary javascript functions for the tab about to be shown
+  if (Name == 'Stores'){
+        Stores();
+  } else if (Name == 'Wallet'){
+        Wallet();
+  } else if (Name == 'Home'){
+
+  } else if (Name == 'Settings'){
+      Settings();
+  }
 
   // Get all elements with class="tabcontent" and hide them
   tabcontent = document.getElementsByClassName("tabcontent");
@@ -55,19 +85,9 @@ function openTab(Name) {
   var title = document.getElementById("title").firstChild;
   title.textContent = Name;
 
-  //Call the necessary javascript functions for the tab about to be shown
-  if (Name == 'Stores'){
-        Stores();
-  } else if (Name == 'Wallet'){
-        Wallet();
-  } else if (Name == 'Home'){
-
-  } else if (Name == 'Settings'){
-      Settings();
-  }
-
   // Show the current tab, and add an "active" class to the button that opened the tab
   document.getElementById(Name).style.display = "block";
+  event.target.className += " active";
 }
 
 function initApp(){

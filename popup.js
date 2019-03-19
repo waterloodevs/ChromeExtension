@@ -149,62 +149,213 @@ function updateDataFromServer(user) {
     });
 }
 
+
+/**
+ * initApp handles setting up UI event listeners and registering Firebase auth listeners:
+ *  - firebase.auth().onAuthStateChanged: This listener is called when the user is signed in or
+ *    out, and that is where we update the UI.
+ */
+//function initApp() {
+//    // Listening for auth state changes.
+//    // [START authstatelistener]
+//    firebase.auth().onAuthStateChanged(function (user) {
+//        alert('hey');
+//        // [START_EXCLUDE silent]
+//        document.getElementById('quickstart-verify-email').disabled = true;
+//        // [END_EXCLUDE]
+//        if (user) {
+//            // User is signed in.
+//            var displayName = user.displayName;
+//            //var email = user.email;
+//            var emailVerified = user.emailVerified;
+//            var photoURL = user.photoURL;
+//            var isAnonymous = user.isAnonymous;
+//            //var uid = user.uid;
+//            var providerData = user.providerData;
+//            // [START_EXCLUDE]
+//            document.getElementById('quickstart-sign-in-status').textContent = 'Signed in';
+//            document.getElementById('quickstart-sign-in').textContent = 'Sign out';
+//            document.getElementById('quickstart-account-details').textContent = JSON.stringify(user, null, '  ');
+//            if (!emailVerified) {
+//                document.getElementById('quickstart-verify-email').disabled = false;
+//            }
+//            // [END_EXCLUDE]
+//
+//            window.location.href = 'example.html';
+//
+//        } else {
+//            // User is signed out.
+//            // [START_EXCLUDE]
+//            document.getElementById('quickstart-sign-in-status').textContent = 'Signed out';
+//            document.getElementById('quickstart-sign-in').textContent = 'Sign in';
+//            document.getElementById('quickstart-account-details').textContent = 'null';
+//            // [END_EXCLUDE]
+//        }
+//        // [START_EXCLUDE silent]
+//        document.getElementById('quickstart-sign-in').disabled = false;
+//        // [END_EXCLUDE]
+//    });
+//    // [END authstatelistener]
+//
+//    document.getElementById('quickstart-sign-in').addEventListener('click', toggleSignIn, false);
+//    document.getElementById('quickstart-sign-up').addEventListener('click', handleSignUp, false);
+//    document.getElementById('quickstart-verify-email').addEventListener('click', sendEmailVerification, false);
+//    document.getElementById('quickstart-password-reset').addEventListener('click', sendPasswordReset, false);
+//}
+function Stores(){
+    chrome.storage.local.get(['stores'], function (result) {
+        var names = Array();
+        var stores = result['stores'];
+        var length = stores.length;
+        for (var i = 0; i < length; i++) {
+            var name = stores[i].name;
+            names.push(name);
+        }
+        document.getElementById("featured-stores").textContent = names;
+    });
+}
+
+function Wallet(){
+    chrome.storage.local.get(['balance'], function (result) {
+        let balance = result['balance'];
+        document.getElementById('balance').textContent = balance;
+    });
+    // Get transactions as well
+}
+
+function Settings(){
+
+    // Set the user details
+    document.getElementById("userEmail").textContent = firebase.auth().currentUser.email;
+    // Hide the nav bar
+    tab = document.getElementsByClassName("tab");
+    tab[0].style.display = "none";
+
+    // Make back button visible and add listener
+    document.getElementById("settings-left").style.visibility = "visible";
+    document.getElementById("settings-left").addEventListener('click', function(){
+        // Send back to home page
+        openTab("HomeButton", "Home");
+        // Hide the back button
+        document.getElementById("settings-left").style.visibility = "hidden";
+        // Show the navigation bar again
+        tab[0].style.display = "block";
+        }, false);
+
+    // Add listener for the logout button
+    document.getElementById("LogoutButton").addEventListener('click', function(){
+        // Hide the back button
+        document.getElementById("settings-left").style.visibility = "hidden";
+        // Show the navigation bar again
+        tab[0].style.display = "block";
+        // sign out the user
+        firebase.auth().signOut();
+    }, false);
+}
+
+function openTab(buttonId, tabId) {
+  // Declare all variables
+  var i, tabcontent, tablinks;
+
+  //Call the necessary javascript functions for the tab about to be shown
+  if (tabId == 'Stores'){
+        Stores();
+  } else if (tabId == 'Wallet'){
+        Wallet();
+  } else if (tabId == 'Home'){
+
+  } else if (tabId == 'Settings'){
+      Settings();
+  }
+
+  // Get all elements with class="tabcontent" and hide them
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+
+  // Get all elements with class="tablinks" and remove the class "active"
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+
+  // Replace the title text
+  var title = document.getElementById("title").firstChild;
+  title.textContent = tabId;
+
+  // Show the current tab, and add an "active" class to the button that opened the tab
+  document.getElementById(tabId).style.display = "block";
+  document.getElementById(buttonId).className += " active";
+}
+
+
+function mainPage(){
+    alert('mainpage');
+    //Show the main page
+    document.getElementById("mainPage").style.display = "block";
+    // Set listeners to all the buttons on the main page
+    document.getElementById("HomeButton").addEventListener('click', function(){ openTab("HomeButton", "Home"); }, false);
+    document.getElementById("StoresButton").addEventListener('click', function(){ openTab("StoresButton", "Stores"); }, false);
+    document.getElementById("WalletButton").addEventListener('click', function(){ openTab("WalletButton", "Wallet"); }, false);
+    document.getElementById("settings-right").addEventListener('click', function(){ openTab("settings-right", "Settings"); }, false);
+
+    document.getElementById("stores-text-link").addEventListener('click', function(){ openTab("stores-text-link", "Stores"); }, false);
+
+    // Click on default tab
+    document.getElementById("HomeButton").click();
+}
+
+
 /**
  * Handles the sign in button press.
  */
 function toggleSignIn() {
-    if (firebase.auth().currentUser) {
-        // [START signout]
-        firebase.auth().signOut();
-        // [END signout]
-    } else {
-        var email = document.getElementById('email').value;
-        var password = document.getElementById('password').value;
-        if (email.length < 4) {
-            alert('Please enter an email address.');
-            return;
-        }
-        if (password.length < 4) {
-            alert('Please enter a password.');
-            return;
-        }
-
-        // TODO, no need for listeners for signin and signout, modify the code below to use
-        //  .then before .catch -> have only one listener in initapp
-
-        // Sign in with email and pass.
-        // [START authwithemail]
-        firebase.auth().signInWithEmailAndPassword(email, password).then(function(){
-            // When a user logs in -
-            // Get list of featured stores, balance and transactions from backend
-            // Store in chrome storage
-            var user = firebase.auth().currentUser;
-            // Send FCM token to backend in case it was
-            // refreshed while the user was not logged in
-            sendFcmTokenToServer(user);
-            // Get and store data into local storage in case the
-            // client was notified when the user was not logged in
-            updateDataFromServer(user);
-
-            window.location.href = 'example.html';
-
-        }).catch(function (error) {
-            // Handle Errors here.
-            var errorCode = error.code;1
-            var errorMessage = error.message;
-            // [START_EXCLUDE]
-            if (errorCode === 'auth/wrong-password') {
-                alert('Wrong password.');
-            } else {
-                alert(errorMessage);
-            }
-            console.log(error);
-            document.getElementById('quickstart-sign-in').disabled = false;
-            // [END_EXCLUDE]
-        });
-        // [END authwithemail]
+    var email = document.getElementById('email').value;
+    var password = document.getElementById('password').value;
+    if (email.length < 4) {
+        alert('Please enter an email address.');
+        return;
     }
-    document.getElementById('quickstart-sign-in').disabled = true;
+    if (password.length < 4) {
+        alert('Please enter a password.');
+        return;
+    }
+
+    // TODO, no need for listeners for signin and signout, modify the code below to use
+    //  .then before .catch -> have only one listener in initapp
+
+    // Sign in with email and pass.
+    // [START authwithemail]
+    firebase.auth().signInWithEmailAndPassword(email, password).then(function(){
+        // When a user logs in -
+        // Get list of featured stores, balance and transactions from backend
+        // Store in chrome storage
+        var user = firebase.auth().currentUser;
+        // Send FCM token to backend in case it was
+        // refreshed while the user was not logged in
+        sendFcmTokenToServer(user);
+        // Get and store data into local storage in case the
+        // client was notified when the user was not logged in
+        updateDataFromServer(user);
+
+        // If successfully signed in, auth state change listener in initApp() will be called.
+        //window.location.href = 'example.html';
+
+    }).catch(function (error) {
+        // Handle Errors here.
+        var errorCode = error.code;1
+        var errorMessage = error.message;
+        // [START_EXCLUDE]
+        if (errorCode === 'auth/wrong-password') {
+            alert('Wrong password.');
+        } else {
+            alert(errorMessage);
+        }
+        console.log(error);
+        document.getElementById('quickstart-sign-in').disabled = false;
+        // [END_EXCLUDE]
+    });
 }
 
 /**
@@ -233,7 +384,8 @@ function handleSignUp() {
         sendFcmTokenToServer(user);
         // Get and store data into local storage
         updateDataFromServer(user);
-        window.location.href = 'example.html';
+        // If successfully signed up, auth state change listener in initApp() will be called.
+        //window.location.href = 'example.html';
     })
     .catch(function (error) {
         // Handle Errors here.
@@ -289,56 +441,32 @@ function sendPasswordReset() {
     // [END sendpasswordemail];
 }
 
-/**
- * initApp handles setting up UI event listeners and registering Firebase auth listeners:
- *  - firebase.auth().onAuthStateChanged: This listener is called when the user is signed in or
- *    out, and that is where we update the UI.
- */
-function initApp() {
-    // Listening for auth state changes.
-    // [START authstatelistener]
-    firebase.auth().onAuthStateChanged(function (user) {
-        // [START_EXCLUDE silent]
-        document.getElementById('quickstart-verify-email').disabled = true;
-        // [END_EXCLUDE]
-        if (user) {
-            // User is signed in.
-            var displayName = user.displayName;
-            //var email = user.email;
-            var emailVerified = user.emailVerified;
-            var photoURL = user.photoURL;
-            var isAnonymous = user.isAnonymous;
-            //var uid = user.uid;
-            var providerData = user.providerData;
-            // [START_EXCLUDE]
-            document.getElementById('quickstart-sign-in-status').textContent = 'Signed in';
-            document.getElementById('quickstart-sign-in').textContent = 'Sign out';
-            document.getElementById('quickstart-account-details').textContent = JSON.stringify(user, null, '  ');
-            if (!emailVerified) {
-                document.getElementById('quickstart-verify-email').disabled = false;
-            }
-            // [END_EXCLUDE]
 
-            window.location.href = 'example.html';
-
-        } else {
-            // User is signed out.
-            // [START_EXCLUDE]
-            document.getElementById('quickstart-sign-in-status').textContent = 'Signed out';
-            document.getElementById('quickstart-sign-in').textContent = 'Sign in';
-            document.getElementById('quickstart-account-details').textContent = 'null';
-            // [END_EXCLUDE]
-        }
-        // [START_EXCLUDE silent]
-        document.getElementById('quickstart-sign-in').disabled = false;
-        // [END_EXCLUDE]
-    });
-    // [END authstatelistener]
-
-    document.getElementById('quickstart-sign-in').addEventListener('click', toggleSignIn, false);
-    document.getElementById('quickstart-sign-up').addEventListener('click', handleSignUp, false);
+function loginPage(){
+    alert('loginpage');
+    // Show the login page
+    document.getElementById('loginPage').style.display = "block";
+    // Set listeners to all the buttons on the login page.
+    document.getElementById('signInButton').addEventListener('click', toggleSignIn, false);
+    document.getElementById('signUpButton').addEventListener('click', handleSignUp, false);
     document.getElementById('quickstart-verify-email').addEventListener('click', sendEmailVerification, false);
     document.getElementById('quickstart-password-reset').addEventListener('click', sendPasswordReset, false);
+}
+
+
+function initApp(){
+    // Gets called when popup opens, and while the popup is open,
+    // when the user signs in or signs out.
+    firebase.auth().onAuthStateChanged(function (user){
+        // Hide the login page and the main page
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("mainPage").style.display = "none";
+        if (user) {
+            mainPage();
+        } else {
+            loginPage();
+        }
+    });
 }
 
 window.onload = function () {

@@ -5,6 +5,7 @@
     <title>Title</title>
 
     <link rel="stylesheet" href="example.css">
+    <script src="https://www.gstatic.com/firebasejs/5.8.5/firebase.js"></script>
     <script src="example.js"></script>
 
 </head>
@@ -13,7 +14,7 @@
 <div id="container">
 
     <div class="header">
-        <input type="image" src="images/profile.png" id="settings-left"
+        <input type="image" src="images/back.png" id="settings-left"
                alt="Settings" value="Settings"/>
         <span id="title">Home</span>
         <input type="image" src="images/profile.png" id="settings-right"
@@ -23,7 +24,7 @@
     <!-- Tab content -->
     <div id="Home" class="tabcontent">
         <p>You are not currently at a partnered store.</p>
-        <a id="stores-text-link">See Featured Stores</a>
+        <a href='#' id="stores-text-link">See Featured Stores</a>
     </div>
 
     <div id="Stores" class="tabcontent">
