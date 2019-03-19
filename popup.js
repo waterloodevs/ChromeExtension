@@ -291,7 +291,6 @@ function openTab(buttonId, tabId) {
 
 
 function mainPage(){
-    alert('mainpage');
     //Show the main page
     document.getElementById("mainPage").style.display = "block";
     // Set listeners to all the buttons on the main page
@@ -443,7 +442,6 @@ function sendPasswordReset() {
 
 
 function loginPage(){
-    alert('loginpage');
     // Show the login page
     document.getElementById('loginPage').style.display = "block";
     // Set listeners to all the buttons on the login page.
