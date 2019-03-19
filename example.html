@@ -13,15 +13,17 @@
 <div id="container">
 
     <div class="header">
-            <input type="image" src="images/profile.png" id="settings-left" value="Settings"/>
-            <span id="title">Home</span>
-            <input type="image" src="images/profile.png" id="settings-right" value="Settings"/>
-        </div>
+        <input type="image" src="images/profile.png" id="settings-left"
+               alt="Settings" value="Settings"/>
+        <span id="title">Home</span>
+        <input type="image" src="images/profile.png" id="settings-right"
+               alt="Settings" value="Settings"/>
+    </div>
 
     <!-- Tab content -->
     <div id="Home" class="tabcontent">
         <p>You are not currently at a partnered store.</p>
-        <a href="stores.html">See Featured Stores</a>
+        <a id="stores-text-link">See Featured Stores</a>
     </div>
 
     <div id="Stores" class="tabcontent">
@@ -32,6 +34,10 @@
     <div id="Wallet" class="tabcontent">
         <p>Balance: <span id="balance">Unknown</span></p>
         <p>Transactions: <span id="transactions">Empty</span></p>
+    </div>
+
+    <div id="Settings" class="tabcontent">
+        <button id="LogoutButton">Logout</button>
     </div>
 
     <!-- Tab links -->

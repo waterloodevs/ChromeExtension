@@ -1,3 +1,14 @@
+// Initialize Firebase
+var config = {
+    apiKey: "AIzaSyD8BV1qrn_vgin_DlxfIdVsdmk8FPnqmeY",
+    authDomain: "kino-extension.firebaseapp.com",
+    databaseURL: "https://kino-extension.firebaseio.com",
+    projectId: "kino-extension",
+    storageBucket: "kino-extension.appspot.com",
+    messagingSenderId: "883319920768"
+  };
+firebase.initializeApp(config);
+
 function Stores(){
     chrome.storage.local.get(['stores'], function (result) {
         var names = Array();
@@ -19,8 +30,9 @@ function Wallet(){
     // Get transactions as well
 }
 
-function openSettings(){
-
+function Settings(){
+    // Add listener for the logout button
+    document.getElementById("LogoutButton").addEventListener('click', function(){firebase.auth().signOut();}, false);
 }
 
 function openTab(Name) {
@@ -50,6 +62,8 @@ function openTab(Name) {
         Wallet();
   } else if (Name == 'Home'){
 
+  } else if (Name == 'Settings'){
+      Settings();
   }
 
   // Show the current tab, and add an "active" class to the button that opened the tab
@@ -60,8 +74,9 @@ function initApp(){
     document.getElementById("HomeButton").addEventListener('click', function(){ openTab('Home'); }, false);
     document.getElementById("StoresButton").addEventListener('click', function(){ openTab('Stores'); }, false);
     document.getElementById("WalletButton").addEventListener('click', function(){ openTab('Wallet'); }, false);
+    document.getElementById('settings-right').addEventListener('click', function(){ openTab('Settings'); }, false);
 
-    document.getElementById('settings-right').addEventListener('click', openSettings, false);
+    document.getElementById("stores-text-link").addEventListener('click', function(){ openTab('Stores'); }, false);
 
     // click on default tab
     document.getElementById("HomeButton").click();

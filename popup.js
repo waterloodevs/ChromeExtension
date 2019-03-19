@@ -182,7 +182,8 @@ function toggleSignIn() {
             // Send FCM token to backend in case it was
             // refreshed while the user was not logged in
             sendFcmTokenToServer(user);
-            // Get and store data into local storage
+            // Get and store data into local storage in case the
+            // client was notified when the user was not logged in
             updateDataFromServer(user);
 
             window.location.href = 'example.html';
