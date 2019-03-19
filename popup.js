@@ -115,7 +115,7 @@ function sendUserToServer(user) {
 }
 
 function updateDataFromServer(user) {
-    var url = apiRoot + '/data';
+    var url = apiRoot + '/user_data';
     user.getIdToken().then(function(idToken) {
         fetch(url, {
         method: 'get',

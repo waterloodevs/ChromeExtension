@@ -110,9 +110,9 @@ def index():
     return jsonify({"Message": "Welcome to the Kino Api"}), 200
 
 
-@app.route('/data')
+@app.route('/user_data')
 @http_auth.login_required
-def data():
+def user_data():
     user = User.query.filter_by(uid=g.uid).first()
     return jsonify({
         "stores": STORES,
