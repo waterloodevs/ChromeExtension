@@ -204,7 +204,7 @@ function updateDataFromServer(user) {
 //}
 function Stores(){
     chrome.storage.local.get(['stores'], function (result) {
-        var names = Array();
+        var names = new Array();
         var stores = result['stores'];
         var length = stores.length;
         for (var i = 0; i < length; i++) {
@@ -217,10 +217,11 @@ function Stores(){
 
 function Wallet(){
     chrome.storage.local.get(['balance'], function (result) {
-        let balance = result['balance'];
+        var balance = result['balance'];
+        var transactions = result['transactions'];
         document.getElementById('balance').textContent = balance;
+        //TODO: Set transactions
     });
-    // Get transactions as well
 }
 
 function Settings(){
