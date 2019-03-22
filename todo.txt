@@ -1,5 +1,7 @@
-1. email raukten compliance team - Done
-2. make presentation for launchpad
+1. email raukten compliance team - DONE
+2. make presentation for launchpad - DONE
 3. Create blockchain address and get appID (takes a week)
 4. Inquire about giftcards (or buy yourself and resell)
-5. Post Unity Kin sdk upwork job
+5. Post Unity Kin sdk upwork job - DONE
+6. Get a better idea of the game you want developed and hire someone from upwork
+
