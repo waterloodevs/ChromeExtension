@@ -1,4 +1,3 @@
-import stripe
 import requests
 import json
 import psycopg2
