@@ -39,19 +39,19 @@ class User(db.Model):
     email = db.Column(db.String, unique=True, nullable=False)
     balance = db.Column(db.Integer, nullable=False)
     transactions = db.Column(JSON, nullable=False)
-    mobile_app = db.Column(db.Boolean, nullable=False)
     fcm_token = db.Column(db.String)
+    public_address = db.Column(db.String)
 
     def __init__(self, uid, email, balance=0, transactions=None,
-                 mobile_app=False, fcm_token=None):
+                 fcm_token=None, public_address=None):
         if transactions is None:
             transactions = []
         self.uid = uid
         self.email = email
         self.balance = balance
         self.transactions = transactions
-        self.mobile_app = mobile_app
         self.fcm_token = fcm_token
+        self.public_address = public_address
 
     def __repr__(self):
         return "email: {}, balance: {}"\
@@ -83,8 +83,8 @@ def register():
         db.session.commit()
     except AssertionError as err:
         db.session.rollback()
-        return Response(status=500)
-    return Response(status=201)
+        return jsonify(), 500
+    return jsonify(), 201
 
 
 @app.route('/update_fcm_token', methods=['POST'])
@@ -135,7 +135,7 @@ def affiliate_link():
     return jsonify({"url": url}), 200
 
 
-def notify_user(user, transaction):
+def notify_extension(user, transaction):
     message = messaging.Message(
         webpush=messaging.WebpushConfig(
             notification=messaging.WebpushNotification(
@@ -156,6 +156,10 @@ def notify_user(user, transaction):
     print('Successfully sent message: ', response)
 
 
+def notify_app(user, transaction):
+    return
+
+
 def email_user(user, transaction):
     return
 
@@ -163,8 +167,12 @@ def email_user(user, transaction):
 def new_transaction(uid, transaction):
     user = User.query.filter_by(uid=uid).first()
     if user is None:
-        raise Exception("Invalid uid for new transaction: {}".format(uid))
-    notify_user(user, transaction)
+        raise Exception("Unable to find user for uid: {}".format(uid))
+    # Build earn transaction based on user's public address
+    # Update user's balance in db
+    # Update user's transactions in db
+    notify_extension(user, transaction)
+    notify_app(user, transaction)
     email_user(user, transaction)
     return
 
