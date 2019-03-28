@@ -58,6 +58,7 @@ class User(db.Model):
             .format(self.email, self.balance)
 
 
+# Using this to verify authenticated calls where login is required
 @http_auth.verify_token
 def verify_token(fb_id_token):
     try:
@@ -66,11 +67,6 @@ def verify_token(fb_id_token):
     except Exception as err:
         return False
     return True
-
-# def get_uid(fb_id_token):
-#     decoded_token = auth.verify_id_token(fb_id_token)
-#     uid = decoded_token['uid']
-#     return uid
 
 
 @app.route('/register', methods=['POST'])
@@ -103,13 +99,13 @@ def update_fcm_token():
     return jsonify(), 201
 
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 @http_auth.login_required
 def index():
     return jsonify({"Message": "Welcome to the Kino Api"}), 200
 
 
-@app.route('/user_data')
+@app.route('/user_data', methods=['GET'])
 @http_auth.login_required
 def user_data():
     user = User.query.filter_by(uid=g.uid).first()
@@ -120,12 +116,12 @@ def user_data():
     }), 200
 
 
-@app.route('/stores')
+@app.route('/stores', methods=['GET'])
 def data():
     return jsonify({"stores": STORES}), 200
 
 
-@app.route('/url')
+@app.route('/url', methods=['GET'])
 @http_auth.login_required
 def affiliate_link():
     user = User.query.filter_by(uid=g.uid).first()
@@ -168,12 +164,39 @@ def new_transaction(uid, transaction):
     user = User.query.filter_by(uid=uid).first()
     if user is None:
         raise Exception("Unable to find user for uid: {}".format(uid))
-    # Build earn transaction based on user's public address
     # Update user's balance in db
     # Update user's transactions in db
     notify_extension(user, transaction)
-    notify_app(user, transaction)
     email_user(user, transaction)
+    if user.public_address:
+        # Build earn transaction based on user's public address if present
+        # Confirm that the db balance matches the account balance on block-chain
+        notify_app(user, transaction)
+    return
+
+
+@app.route('/update_public_address', methods=['POST'])
+@http_auth.login_required
+def update_public_address():
+    if 'public_address' not in request.get_json():
+        return jsonify(), 500
+    public_address = request.get_json()['public_address']
+    user = User.query.filter_by(uid=g.uid).first()
+    user.public_address = public_address
+    try:
+        db.session.commit()
+    except AssertionError as err:
+        db.session.rollback()
+        return jsonify(), 500
+    # First time installing the app, create a earn transaction for the user's balance
+    return jsonify(), 201
+
+
+@app.route('/buy_giftcard', methods=['GET'])
+@http_auth.login_required
+def buy_giftcard():
+    # Get the gift card type, amount, email and quantity 
+    # Whitelist the spend transaction and send it back to the app to execute
     return
 
 
