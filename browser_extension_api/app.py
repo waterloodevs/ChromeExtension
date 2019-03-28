@@ -29,6 +29,7 @@ STORES = [
     {'name': 'Walmart', 'url': 'www.walmart.com'},
     {'name': 'Ebay', 'url': 'www.ebay.com'}
 ]
+KIN_PER_DOLLAR = 100
 
 
 class User(db.Model):
@@ -66,11 +67,6 @@ def verify_token(fb_id_token):
     except Exception as err:
         return False
     return True
-
-# def get_uid(fb_id_token):
-#     decoded_token = auth.verify_id_token(fb_id_token)
-#     uid = decoded_token['uid']
-#     return uid
 
 
 @app.route('/register', methods=['POST'])
@@ -168,12 +164,51 @@ def new_transaction(uid, transaction):
     user = User.query.filter_by(uid=uid).first()
     if user is None:
         raise Exception("Unable to find user for uid: {}".format(uid))
-    # Build earn transaction based on user's public address
     # Update user's balance in db
+    user.balance += calc_kin_amount(dollar_amount)
     # Update user's transactions in db
+    user.transactions[transaction['id']] = transaction
+    try:
+        db.session.commit()
+    except AssertionError as err:
+        db.session.rollback()
+        # TODO: what happens if we error on the backend
+        raise Exception
     notify_extension(user, transaction)
-    notify_app(user, transaction)
     email_user(user, transaction)
+    if user.public_address:
+        # Build earn transaction based on user's public address if present
+        # Confirm user's balance matches the balance on the block-chain
+        notify_app(user, transaction)
+    return
+
+
+def calc_kin_amount(dollar_amount):
+    return dollar_amount * KIN_PER_DOLLAR
+
+
+@app.route('/update_public_address', methods=['POST'])
+@http_auth.login_required
+def update_public_address():
+    if 'public_address' not in request.get_json():
+        return jsonify(), 500
+    public_address = request.get_json()['public_address']
+    user = User.query.filter_by(uid=g.uid).first()
+    user.public_address = public_address
+    try:
+        db.session.commit()
+    except AssertionError as err:
+        db.session.rollback()
+        return jsonify(), 500
+    # Execute earn transaction for the user's balance amount
+    return jsonify(), 201
+
+
+@app.route('/buy_giftcard', methods=['GET'])
+@http_auth.login_required
+def buy_giftcard():
+    # Get giftcard type, amount, email, quantity
+    # Whitelist transaction and send back to app
     return
 
 
