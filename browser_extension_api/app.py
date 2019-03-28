@@ -59,6 +59,7 @@ class User(db.Model):
             .format(self.email, self.balance)
 
 
+# Using this to verify authenticated calls where login is required
 @http_auth.verify_token
 def verify_token(fb_id_token):
     try:
@@ -99,13 +100,13 @@ def update_fcm_token():
     return jsonify(), 201
 
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 @http_auth.login_required
 def index():
     return jsonify({"Message": "Welcome to the Kino Api"}), 200
 
 
-@app.route('/user_data')
+@app.route('/user_data', methods=['GET'])
 @http_auth.login_required
 def user_data():
     user = User.query.filter_by(uid=g.uid).first()
@@ -116,12 +117,12 @@ def user_data():
     }), 200
 
 
-@app.route('/stores')
+@app.route('/stores', methods=['GET'])
 def data():
     return jsonify({"stores": STORES}), 200
 
 
-@app.route('/url')
+@app.route('/url', methods=['GET'])
 @http_auth.login_required
 def affiliate_link():
     user = User.query.filter_by(uid=g.uid).first()
@@ -200,7 +201,7 @@ def update_public_address():
     except AssertionError as err:
         db.session.rollback()
         return jsonify(), 500
-    # Execute earn transaction for the user's balance amount
+    # First time installing the app, create a earn transaction for the user's balance
     return jsonify(), 201
 
 
@@ -208,7 +209,7 @@ def update_public_address():
 @http_auth.login_required
 def buy_giftcard():
     # Get giftcard type, amount, email, quantity
-    # Whitelist transaction and send back to app
+    # Whitelist the spend transaction and send back to app
     return
 
 
