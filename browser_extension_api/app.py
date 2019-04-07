@@ -9,6 +9,7 @@ from sqlalchemy.dialects.postgresql import JSON
 import firebase_admin
 from firebase_admin import credentials, auth, messaging
 from flask_httpauth import HTTPTokenAuth
+from flask_ngrok import run_with_ngrok
 
 http_auth = HTTPTokenAuth(scheme='Token')
 
@@ -19,6 +20,7 @@ DATABASE_URL = 'postgresql://postgres:postgres@localhost:5432/postgres'
 
 
 app = Flask(__name__)
+# run_with_ngrok(app)
 db = SQLAlchemy(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -153,65 +155,65 @@ def notify_extension(user, transaction):
     print('Successfully sent message: ', response)
 
 
-def notify_app(user, transaction):
-    return
+# def notify_app(user, transaction):
+#     return
+# 
+# 
+# def email_user(user, transaction):
+#     return
 
 
-def email_user(user, transaction):
-    return
-
-
-def new_transaction(uid, transaction):
-    user = User.query.filter_by(uid=uid).first()
-    if user is None:
-        raise Exception("Unable to find user for uid: {}".format(uid))
-    # Update user's balance in db
-    user.balance += calc_kin_amount(dollar_amount)
-    # Update user's transactions in db
-    user.transactions[transaction['id']] = transaction
-    try:
-        db.session.commit()
-    except AssertionError as err:
-        db.session.rollback()
-        # TODO: what happens if we error on the backend
-        raise Exception
-    notify_extension(user, transaction)
-    email_user(user, transaction)
-    if user.public_address:
-        # Build earn transaction based on user's public address if present
-        # Confirm user's balance matches the balance on the block-chain
-        notify_app(user, transaction)
-    return
-
-
-def calc_kin_amount(dollar_amount):
-    return dollar_amount * KIN_PER_DOLLAR
-
-
-@app.route('/update_public_address', methods=['POST'])
-@http_auth.login_required
-def update_public_address():
-    if 'public_address' not in request.get_json():
-        return jsonify(), 500
-    public_address = request.get_json()['public_address']
-    user = User.query.filter_by(uid=g.uid).first()
-    user.public_address = public_address
-    try:
-        db.session.commit()
-    except AssertionError as err:
-        db.session.rollback()
-        return jsonify(), 500
-    # First time installing the app, create a earn transaction for the user's balance
-    return jsonify(), 201
-
-
-@app.route('/buy_giftcard', methods=['GET'])
-@http_auth.login_required
-def buy_giftcard():
-    # Get giftcard type, amount, email, quantity
-    # Whitelist the spend transaction and send back to app
-    return
+# def new_transaction(uid, transaction):
+#     user = User.query.filter_by(uid=uid).first()
+#     if user is None:
+#         raise Exception("Unable to find user for uid: {}".format(uid))
+#     # Update user's balance in db
+#     user.balance += calc_kin_amount(dollar_amount)
+#     # Update user's transactions in db
+#     user.transactions[transaction['id']] = transaction
+#     try:
+#         db.session.commit()
+#     except AssertionError as err:
+#         db.session.rollback()
+#         # TODO: what happens if we error on the backend
+#         raise Exception
+#     notify_extension(user, transaction)
+#     email_user(user, transaction)
+#     if user.public_address:
+#         # Build earn transaction based on user's public address if present
+#         # Confirm user's balance matches the balance on the block-chain
+#         notify_app(user, transaction)
+#     return
+# 
+# 
+# def calc_kin_amount(dollar_amount):
+#     return dollar_amount * KIN_PER_DOLLAR
+# 
+# 
+# @app.route('/update_public_address', methods=['POST'])
+# @http_auth.login_required
+# def update_public_address():
+#     if 'public_address' not in request.get_json():
+#         return jsonify(), 500
+#     public_address = request.get_json()['public_address']
+#     user = User.query.filter_by(uid=g.uid).first()
+#     user.public_address = public_address
+#     try:
+#         db.session.commit()
+#     except AssertionError as err:
+#         db.session.rollback()
+#         return jsonify(), 500
+#     # First time installing the app, create a earn transaction for the user's balance
+#     return jsonify(), 201
+# 
+# 
+# @app.route('/buy_giftcard', methods=['GET'])
+# @http_auth.login_required
+# def buy_giftcard():
+#     # Get giftcard type, amount, email, quantity
+#     # Whitelist the spend transaction and send back to app
+#     return
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
