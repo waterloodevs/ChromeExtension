@@ -20,7 +20,7 @@ DATABASE_URL = 'postgresql://postgres:postgres@localhost:5432/postgres'
 
 
 app = Flask(__name__)
-# run_with_ngrok(app)
+run_with_ngrok(app)
 db = SQLAlchemy(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -156,6 +156,19 @@ def notify_extension(user, transaction):
 
 
 # def notify_app(user, transaction):
+#     # See documentation on defining a message payload.
+#     message = messaging.Message(
+#         data={
+#             'kin': str(kin_amount),
+#             'total_kin': str(user.kin),
+#             'brands': brands,
+#             'title': "Kino",
+#             'body': "You just earned {} kin for your recent purchase at {}.".format(kin_amount, brands)
+#         },
+#         token=user.fcm_token,
+#     )
+#     # Send a message to the device corresponding to the provided registration token.
+#     response = messaging.send(message)
 #     return
 # 
 # 
@@ -189,30 +202,31 @@ def notify_extension(user, transaction):
 # def calc_kin_amount(dollar_amount):
 #     return dollar_amount * KIN_PER_DOLLAR
 # 
-# 
-# @app.route('/update_public_address', methods=['POST'])
-# @http_auth.login_required
-# def update_public_address():
-#     if 'public_address' not in request.get_json():
-#         return jsonify(), 500
-#     public_address = request.get_json()['public_address']
-#     user = User.query.filter_by(uid=g.uid).first()
-#     user.public_address = public_address
-#     try:
-#         db.session.commit()
-#     except AssertionError as err:
-#         db.session.rollback()
-#         return jsonify(), 500
-#     # First time installing the app, create a earn transaction for the user's balance
-#     return jsonify(), 201
-# 
-# 
-# @app.route('/buy_giftcard', methods=['GET'])
-# @http_auth.login_required
-# def buy_giftcard():
-#     # Get giftcard type, amount, email, quantity
-#     # Whitelist the spend transaction and send back to app
-#     return
+#
+
+@app.route('/update_public_address', methods=['POST'])
+@http_auth.login_required
+def update_public_address():
+    if 'public_address' not in request.get_json():
+        return jsonify(), 500
+    public_address = request.get_json()['public_address']
+    user = User.query.filter_by(uid=g.uid).first()
+    user.public_address = public_address
+    try:
+        db.session.commit()
+    except AssertionError as err:
+        db.session.rollback()
+        return jsonify(), 500
+    # First time installing the app, create a earn transaction for the user's balance
+    return jsonify(), 201
+
+
+@app.route('/buy_giftcard', methods=['POST'])
+@http_auth.login_required
+def buy_giftcard():
+    # Get giftcard type, amount, email, quantity
+    # Whitelist the spend transaction and send back to app
+    return
 
 
 if __name__ == '__main__':
