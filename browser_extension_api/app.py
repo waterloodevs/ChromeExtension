@@ -42,18 +42,20 @@ class User(db.Model):
     email = db.Column(db.String, unique=True, nullable=False)
     balance = db.Column(db.Integer, nullable=False)
     transactions = db.Column(JSON, nullable=False)
-    fcm_token = db.Column(db.String)
+    android_fcm_token = db.Column(db.String)
+    web_fcm_token = db.Column(db.String)
     public_address = db.Column(db.String)
 
     def __init__(self, uid, email, balance=0, transactions=None,
-                 fcm_token=None, public_address=None):
+                 android_fcm_token=None, web_fcm_token=None, public_address=None):
         if transactions is None:
             transactions = []
         self.uid = uid
         self.email = email
         self.balance = balance
         self.transactions = transactions
-        self.fcm_token = fcm_token
+        self.android_fcm_token = android_fcm_token
+        self.web_fcm_token = web_fcm_token
         self.public_address = public_address
 
     def __repr__(self):
