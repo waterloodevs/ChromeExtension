@@ -31,7 +31,18 @@ STORES = [
     {'name': 'Walmart', 'url': 'www.walmart.com'},
     {'name': 'Ebay', 'url': 'www.ebay.com'}
 ]
-KIN_PER_DOLLAR = 100
+
+EARN_PRICE_PER_DOLLAR = 100
+SPEND_PRICE_PER_DOLLAR = 1000
+
+GIFTCARD_TYPES = ['Amazon',
+                  'Mcdonalds',
+                  'Uber',
+                  'Spotify',
+                  'Netflix']
+GIFTCARD_AMOUNTS = [5, 10, 25]
+MAX_GIFTCARD_QUANTITY = 10
+MIN_GIFTCARD_QUANTITY = 1
 
 
 class User(db.Model):
@@ -91,11 +102,15 @@ def register():
 @app.route('/update_fcm_token', methods=['POST'])
 @http_auth.login_required
 def update_fcm_token():
-    if 'fcm_token' not in request.get_json():
-        return jsonify(), 500
-    fcm_token = request.get_json()['fcm_token']
     user = User.query.filter_by(uid=g.uid).first()
-    user.fcm_token = fcm_token
+    if 'web_fcm_token' in request.get_json():
+        web_fcm_token = request.get_json()['web_fcm_token']
+        user.web_fcm_token = web_fcm_token
+    elif 'android_fcm_token' in request.get_json():
+        android_fcm_token = request.get_json()['android_fcm_token']
+        user.android_fcm_token = android_fcm_token
+    else:
+        return jsonify(), 500
     try:
         db.session.commit()
     except AssertionError as err:
@@ -219,16 +234,59 @@ def update_public_address():
     except AssertionError as err:
         db.session.rollback()
         return jsonify(), 500
-    # First time installing the app, create a earn transaction for the user's balance
+    # First time installing the app, create a earn transaction for the user's balance - no?
     return jsonify(), 201
+
+
+def validate_order(order):
+    # Ensure all information is present
+    if not all(x in order for x in ['email', 'type', 'amount', 'quantity', 'total']):
+        return False
+
+    type = order['type']
+    amount = order['amount']
+    quanity = order['quantity']
+    total = order['total']
+
+    # Ensure total is correct
+    if total != quanity*amount*SPEND_PRICE_PER_DOLLAR:
+        return False
+    # Ensure the type of gift card exists
+    if type not in GIFTCARD_TYPES:
+        return False
+    # Ensure the amount is one of the valid options
+    if amount not in GIFTCARD_AMOUNTS:
+        return False
+    # Ensure the quantity is within bounds
+    if not MIN_GIFTCARD_QUANTITY <= quanity <= MAX_GIFTCARD_QUANTITY:
+        return False
+
+    return True
 
 
 @app.route('/buy_giftcard', methods=['POST'])
 @http_auth.login_required
 def buy_giftcard():
-    # Get giftcard type, amount, email, quantity
+    order = request.get_json()
+    if not validate_order(order):
+        return jsonify(), 500
+    # Get gift-card type, amount, email, and quantity
+    email = order['email']
+    type = order['type']
+    amount = order['amount']
+    quanity = order['quantity']
+    total = order['total']
     # Whitelist the spend transaction and send back to app
-    return
+    # Add to transactions
+    # Submit the order
+    return jsonify(), 200
+
+
+@app.route('/spend_price_per_dollar', methods=['GET'])
+@http_auth.login_required
+def spend_price_per_dollar():
+    # TODO: Get price from an environment variable
+    return jsonify({"price": SPEND_PRICE_PER_DOLLAR}), 200
 
 
 if __name__ == '__main__':
