@@ -44,6 +44,7 @@ function sendFcmTokenToServer(user) {
                         "Content-type": "application/json",
                         "Authorization": "Token " + idToken
                     },
+
                     body: JSON.stringify({
                         'fcm_token': currentToken
                     })
@@ -225,12 +226,12 @@ function Wallet(){
 }
 
 function Settings(){
-
     // Set the user details
     document.getElementById("userEmail").textContent = firebase.auth().currentUser.email;
     // Hide the nav bar
     tab = document.getElementsByClassName("tab");
     tab[0].style.display = "none";
+
 
     // Make back button visible and add listener
     document.getElementById("settings-left").style.visibility = "visible";
@@ -240,7 +241,7 @@ function Settings(){
         // Hide the back button
         document.getElementById("settings-left").style.visibility = "hidden";
         // Show the navigation bar again
-        tab[0].style.display = "block";
+        tab[0].style.display = "flex";
         }, false);
 
     // Add listener for the logout button
@@ -290,23 +291,6 @@ function openTab(buttonId, tabId) {
   document.getElementById(buttonId).className += " active";
 }
 
-
-function mainPage(){
-    //Show the main page
-    document.getElementById("mainPage").style.display = "block";
-    // Set listeners to all the buttons on the main page
-    document.getElementById("HomeButton").addEventListener('click', function(){ openTab("HomeButton", "Home"); }, false);
-    document.getElementById("StoresButton").addEventListener('click', function(){ openTab("StoresButton", "Stores"); }, false);
-    document.getElementById("WalletButton").addEventListener('click', function(){ openTab("WalletButton", "Wallet"); }, false);
-    document.getElementById("settings-right").addEventListener('click', function(){ openTab("settings-right", "Settings"); }, false);
-
-    document.getElementById("stores-text-link").addEventListener('click', function(){ openTab("stores-text-link", "Stores"); }, false);
-
-    // Click on default tab
-    document.getElementById("HomeButton").click();
-}
-
-
 /**
  * Handles the sign in button press.
  */
@@ -344,9 +328,8 @@ function toggleSignIn() {
 
     }).catch(function (error) {
         // Handle Errors here.
-        var errorCode = error.code;1
+        var errorCode = error.code;
         var errorMessage = error.message;
-        // [START_EXCLUDE]
         if (errorCode === 'auth/wrong-password') {
             alert('Wrong password.');
         } else {
@@ -354,7 +337,6 @@ function toggleSignIn() {
         }
         console.log(error);
         document.getElementById('quickstart-sign-in').disabled = false;
-        // [END_EXCLUDE]
     });
 }
 
@@ -372,9 +354,7 @@ function handleSignUp() {
         alert('Please enter a password.');
         return;
     }
-
     // Sign in with email and pass.
-    // [START createwithemail]
     firebase.auth().createUserWithEmailAndPassword(email, password)
     .then(function () {
         var user = firebase.auth().currentUser;
@@ -398,76 +378,101 @@ function handleSignUp() {
             alert(errorMessage);
         }
         console.log(error);
-        // [END_EXCLUDE]
     });
-    // [END createwithemail]
 }
 
 /**
  * Sends an email verification to the user.
  */
-function sendEmailVerification() {
-    // [START sendemailverification]
-    firebase.auth().currentUser.sendEmailVerification().then(function () {
-        // Email Verification sent!
-        // [START_EXCLUDE]
-        alert('Email Verification Sent!');
-        // [END_EXCLUDE]
-    });
-    // [END sendemailverification]
+//function sendEmailVerification() {
+//    // [START sendemailverification]
+//    firebase.auth().currentUser.sendEmailVerification().then(function () {
+//        // Email Verification sent!
+//        // [START_EXCLUDE]
+//        alert('Email Verification Sent!');
+//        // [END_EXCLUDE]
+//    });
+//    // [END sendemailverification]
+//}
+
+//function sendPasswordReset() {
+//    var email = document.getElementById('email').value;
+//    // [START sendpasswordemail]
+//    firebase.auth().sendPasswordResetEmail(email).then(function () {
+//        // Password Reset Email Sent!
+//        // [START_EXCLUDE]
+//        alert('Password Reset Email Sent!');
+//        // [END_EXCLUDE]
+//    }).catch(function (error) {
+//        // Handle Errors here.
+//        var errorCode = error.code;
+//        var errorMessage = error.message;
+//        // [START_EXCLUDE]
+//        if (errorCode == 'auth/invalid-email') {
+//            alert(errorMessage);
+//        } else if (errorCode == 'auth/user-not-found') {
+//            alert(errorMessage);
+//        }
+//        console.log(error);
+//        // [END_EXCLUDE]
+//    });
+//    // [END sendpasswordemail];
+//}
+
+function hideAllPages(){
+    document.getElementById("loginPage").style.display = "none";
+    document.getElementById("signupPage").style.display = "none";
+    document.getElementById("mainPage").style.display = "none";
 }
 
-function sendPasswordReset() {
-    var email = document.getElementById('email').value;
-    // [START sendpasswordemail]
-    firebase.auth().sendPasswordResetEmail(email).then(function () {
-        // Password Reset Email Sent!
-        // [START_EXCLUDE]
-        alert('Password Reset Email Sent!');
-        // [END_EXCLUDE]
-    }).catch(function (error) {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        // [START_EXCLUDE]
-        if (errorCode == 'auth/invalid-email') {
-            alert(errorMessage);
-        } else if (errorCode == 'auth/user-not-found') {
-            alert(errorMessage);
-        }
-        console.log(error);
-        // [END_EXCLUDE]
-    });
-    // [END sendpasswordemail];
+function showMainPage(){
+    // Hide the login page, sign up page and the main page
+    hideAllPages();
+    //Show the main page
+    document.getElementById("mainPage").style.display = "block";
+    // Set listeners to all the buttons on the main page
+    document.getElementById("HomeButton").addEventListener('click', function(){ openTab("HomeButton", "Home"); }, false);
+    document.getElementById("StoresButton").addEventListener('click', function(){ openTab("StoresButton", "Stores"); }, false);
+    document.getElementById("WalletButton").addEventListener('click', function(){ openTab("WalletButton", "Wallet"); }, false);
+    document.getElementById("settings-right").addEventListener('click', function(){ openTab("settings-right", "Settings"); }, false);
+    document.getElementById("stores-text-link").addEventListener('click', function(){ openTab("stores-text-link", "Stores"); }, false);
+    // Click on default tab
+    document.getElementById("HomeButton").click();
 }
 
+function showSignupPage(){
+    // Hide the login page, sign up page and the main page
+    hideAllPages();
+    // Show the login page
+    document.getElementById('signupPage').style.display = "block";
+    // Set listeners to all the buttons on the login page.
+    document.getElementById('signInButton').addEventListener('click', toggleSignIn, false);
+    document.getElementById('loginLink').addEventListener('click', showLoginPage, false);
+}
 
-function loginPage(){
+function showLoginPage(){
+    // Hide the login page, sign up page and the main page
+    hideAllPages();
     // Show the login page
     document.getElementById('loginPage').style.display = "block";
     // Set listeners to all the buttons on the login page.
     document.getElementById('signInButton').addEventListener('click', toggleSignIn, false);
-    document.getElementById('signUpButton').addEventListener('click', handleSignUp, false);
-    document.getElementById('quickstart-verify-email').addEventListener('click', sendEmailVerification, false);
-    document.getElementById('quickstart-password-reset').addEventListener('click', sendPasswordReset, false);
+    document.getElementById('signupLink').addEventListener('click', showSignupPage, false);
+    //TODO: password reset and send verification email
 }
 
-
-function initApp(){
+function init(){
     // Gets called when popup opens, and while the popup is open,
     // when the user signs in or signs out.
     firebase.auth().onAuthStateChanged(function (user){
-        // Hide the login page and the main page
-        document.getElementById("loginPage").style.display = "none";
-        document.getElementById("mainPage").style.display = "none";
         if (user) {
-            mainPage();
+            showMainPage();
         } else {
-            loginPage();
+            showLoginPage();
         }
     });
 }
 
 window.onload = function () {
-    initApp();
+    init();
 };

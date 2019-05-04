@@ -85,6 +85,12 @@ def verify_token(fb_id_token):
     return True
 
 
+@app.route('/', methods=['GET'])
+@http_auth.login_required
+def index():
+    return jsonify({"Message": "Welcome to the Kino Api"}), 200
+
+
 @app.route('/register', methods=['POST'])
 @http_auth.login_required
 def register():
@@ -119,12 +125,6 @@ def update_fcm_token():
     return jsonify(), 201
 
 
-@app.route('/', methods=['GET'])
-@http_auth.login_required
-def index():
-    return jsonify({"Message": "Welcome to the Kino Api"}), 200
-
-
 @app.route('/user_data', methods=['GET'])
 @http_auth.login_required
 def user_data():
@@ -147,7 +147,7 @@ def affiliate_link():
     user = User.query.filter_by(uid=g.uid).first()
     # Every url needs to have http(s):// at the start
     url = "http://www.google.com"
-    # generate the affiliate url
+    # Generate the affiliate url
     return jsonify({"url": url}), 200
 
 
@@ -185,8 +185,13 @@ def notify_extension(user, transaction):
 #         token=user.fcm_token,
 #     )
 #     # Send a message to the device corresponding to the provided registration token.
-#     response = messaging.send(message)
+#     try:
+#         response = messaging.send(message)
+#     except:
+#         # user has logged out
+#
 #     return
+
 # 
 # 
 # def email_user(user, transaction):
@@ -238,15 +243,15 @@ def update_public_address():
     return jsonify(), 201
 
 
-def validate_order(order):
+def valid_order(order):
     # Ensure all information is present
     if not all(x in order for x in ['email', 'type', 'amount', 'quantity', 'total']):
         return False
 
     type = order['type']
-    amount = order['amount']
-    quanity = order['quantity']
-    total = order['total']
+    amount = int(order['amount'])
+    quanity = int(order['quantity'])
+    total = float(order['total'])
 
     # Ensure total is correct
     if total != quanity*amount*SPEND_PRICE_PER_DOLLAR:
@@ -268,14 +273,14 @@ def validate_order(order):
 @http_auth.login_required
 def buy_giftcard():
     order = request.get_json()
-    if not validate_order(order):
+    if not valid_order(order):
         return jsonify(), 500
     # Get gift-card type, amount, email, and quantity
-    email = order['email']
     type = order['type']
-    amount = order['amount']
-    quanity = order['quantity']
-    total = order['total']
+    email = order['email']
+    amount = int(order['amount'])
+    quanity = int(order['quantity'])
+    total = float(order['total'])
     # Whitelist the spend transaction and send back to app
     # Add to transactions
     # Submit the order
@@ -291,3 +296,5 @@ def spend_price_per_dollar():
 
 if __name__ == '__main__':
     app.run()
+
+

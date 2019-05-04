@@ -111,11 +111,11 @@ function init(){
     chrome.storage.local.get('activated', function (result) {
         var urls = result['activated'];
         var host = window.location.host;
-        if (urls.includes(host)) {
-            alert("already activated");
-        } else {
-            showNotification(host);
-        }
+//        if (urls.includes(host)) {
+//            alert("already activated");
+//        } else {
+//            showNotification(host);
+//        }
     });
 }
 

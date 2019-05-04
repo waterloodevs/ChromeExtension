@@ -1,19 +1,31 @@
 body {
+    width: 220px;
+    height: 350px;
+    position: relative;
 }
 
 #loginPage {
-    display = none;
-    width: 400px;
+    display: none;
+    height: 100%;
+    width: 100%;
+}
+
+#signupPage {
+    display: none;
+    height: 100%;
+    width: 100%;
 }
 
 #mainPage {
     display: none;
-    width: 400px;
     margin: 0 auto;
     border: 1px solid #ccc;
+    height: 100%;
+    width: 100%;
 }
 
 .header {
+    border: 1px solid #ccc;
     margin: 0 auto;
     text-align: center;
     padding: 10px 10px;
@@ -38,6 +50,7 @@ body {
 }
 
 .tabcontent {
+    width: 100%;
     display: none;
     /*padding: 6px 12px;*/
     border: 1px solid #ccc;
@@ -57,6 +70,9 @@ body {
     text-align: center;
     display: flex;
     width: 100%;
+    align: bottom;
+    position: absolute;
+    bottom: 0;
 }
 
 .tab button {

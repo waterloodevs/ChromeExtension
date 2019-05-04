@@ -1,31 +1,36 @@
-  {
-    "name": "Name",
-    "version": "1.0",
-    "description": "Description",
-    "content_scripts": [
-      {
-        "matches": ["*://*/*"],
-        "js": ["content-script.js"],
-        "run_at": "document_end"
-      }
-    ],
-    "browser_action": {
-      "default_popup": "popup.html"
-    },
-    "background": {
-      "page": "background.html",
-      "persistent": true
-    },
-    "permissions": [
-      "tabs",
-      "activeTab",
-      "storage",
-      "cookies",
-      "webNavigation",
-      "webRequest",
-      "<all_urls>",
-      "notifications"],
-    "manifest_version": 2,
-    "content_security_policy": "script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'"
-    //"gcm_sender_id": "103953800507"
-  }
+{
+  "name": "Kino",
+  "version": "1.0",
+  "description": "Earn Kin for shopping online!",
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*/*"
+      ],
+      "js": [
+        "content-script.js"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "browser_action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "page": "background.html",
+    "persistent": true
+  },
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "storage",
+    "cookies",
+    "webNavigation",
+    "webRequest",
+    "<all_urls>",
+    "notifications"
+  ],
+  "manifest_version": 2,
+  "content_security_policy": "script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'"
+  //"gcm_sender_id": "103953800507"
+}
