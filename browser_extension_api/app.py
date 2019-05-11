@@ -125,23 +125,24 @@ def update_fcm_token():
     return jsonify(), 201
 
 
-@app.route('/user_data', methods=['GET'])
-@http_auth.login_required
-def user_data():
-    user = User.query.filter_by(uid=g.uid).first()
-    return jsonify({
-        "stores": STORES,
-        "balance": user.balance,
-        "transactions": user.transactions
-    }), 200
+# @app.route('/user_data', methods=['GET'])
+# @http_auth.login_required
+# def user_data():
+#     user = User.query.filter_by(uid=g.uid).first()
+#     return jsonify({
+#         "stores": STORES,
+#         "balance": user.balance,
+#         "transactions": user.transactions
+#     }), 200
 
 
 @app.route('/stores', methods=['GET'])
-def data():
-    return jsonify({"stores": STORES}), 200
+@http_auth.login_required
+def stores():
+    return jsonify({"stores": ['www.google.com', 'www.amazon.com']}), 200
 
 
-@app.route('/url', methods=['GET'])
+@app.route('/affiliate_link', methods=['GET'])
 @http_auth.login_required
 def affiliate_link():
     user = User.query.filter_by(uid=g.uid).first()
@@ -153,18 +154,10 @@ def affiliate_link():
 
 def notify_extension(user, transaction):
     message = messaging.Message(
-        webpush=messaging.WebpushConfig(
-            notification=messaging.WebpushNotification(
-                title='$GOOG up 1.43% on the day',
-                body='$GOOG gained 11.80 points to close at 835.67, up 1.43% on the day.',
-                silent=True
-            ),
-        ),
-        # notification=messaging.Notification(
-        #     title="title",
-        #     body="body"
-        # ),
-        # data={'transaction': transaction},
+        data={
+            'title': 'title python',
+            'body': 'body python'
+        },
         token=user.fcm_token,
     )
     response = messaging.send(message)

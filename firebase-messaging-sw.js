@@ -1,8 +1,8 @@
 // Give the service worker access to Firebase Messaging.
 // Note that you can only use Firebase Messaging here, other Firebase libraries
 // are not available in the service worker.
-importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js');
-importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js');
+importScripts('https://www.gstatic.com/firebasejs/5.5.6/firebase-app.js');
+importScripts('https://www.gstatic.com/firebasejs/5.5.6/firebase-messaging.js');
 
 // Initialize the Firebase app in the service worker by passing in the
 // messagingSenderId.
@@ -14,29 +14,31 @@ var config = {
     storageBucket: "kino-extension.appspot.com",
     messagingSenderId: "883319920768"
   };
-firebase.initializeApp(config);
+firebase.initializeApp({messagingSenderId: "883319920768"});
 
 // Retrieve an instance of Firebase Messaging so that it can handle background
 // messages.
 const messaging = firebase.messaging();
 
-//messaging.setBackgroundMessageHandler(function(payload) {
-////    console.log('[firebase-messaging-sw.js] Received background message ', payload);
-////    //var data = JSON.parse(payload);
-////
-////    // Call the updateDataFromServer if user is logged in
-////    var user = firebase.auth().currentUser;
-////    if (user) {
-////        updateDataFromServer(user);
-////    }
+
+
+messaging.setBackgroundMessageHandler(function(payload) {
+    alert('sw: ' + payload);
+//    //var data = JSON.parse(payload);
 //
-//    //Customize notification here
-//
-//    return self.registration.showNotification('SW title', {
-//        body: 'SW Body',
-//        //click_action: 'http://wwww.google.com'
-//        //time_to_live: 1,
-//        data: 'data',
-//        //tag: 'tag'
-//    });
-//});
+//    // Call the updateDataFromServer if user is logged in
+//    var user = firebase.auth().currentUser;
+//    if (user) {
+//        updateDataFromServer(user);
+//    }
+
+   //Customize notification here
+    let notificationTitle = 'Background Message Title';
+    let notificationOptions = {
+        body: 'Background Message body.'
+    };
+
+    return self.registration.showNotification(notificationTitle,
+        notificationOptions);
+
+});

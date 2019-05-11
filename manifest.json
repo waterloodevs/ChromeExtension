@@ -1,6 +1,6 @@
 {
   "name": "Kino",
-  "version": "1.0",
+  "version": "0.1",
   "description": "Earn Kin for shopping online!",
   "content_scripts": [
     {
@@ -10,7 +10,7 @@
       "js": [
         "content-script.js"
       ],
-      "run_at": "document_end"
+      "run_at": "document_start"
     }
   ],
   "browser_action": {
@@ -31,6 +31,5 @@
     "notifications"
   ],
   "manifest_version": 2,
-  "content_security_policy": "script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'"
-  //"gcm_sender_id": "103953800507"
+  "content_security_policy": "script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com https://stackpath.bootstrapcdn.com https://code.jquery.com https://cdnjs.cloudflare.com https://use.fontawesome.com; object-src 'self'"
 }

@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset=utf-8/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Kino</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
     <!-- ***************************************************************************************
          * TODO(DEVELOPER): Make sure you are importing the latest version of the Firebase JS. *
@@ -14,70 +16,95 @@
 <body>
 
 <div id="loginPage">
-    <h1>Login</h1>
-    <input class="mdl-textfield__input" style="display:inline;width:auto;" type="text" id="email" name="email"placeholder="Email"/>
-    <br>
-    <input class="mdl-textfield__input" style="display:inline;width:auto;" type="password" id="password" name="password"placeholder="Password"/>
-    <br>
-    <br>
-    <button class="mdl-button mdl-js-button mdl-button--raised" id="signInButton" name="signin">Sign In</button>
-    <br>
-    <a href='#' id="signupLink">New User? Sign up</a>
+    <form class="form-signin">
+        <h1 class="h4 mb-3 font-weight-bold">Login</h1>
+        <label for="email" class="sr-only">Email address</label>
+        <input id="email" type="email" class="form-control" placeholder="Email address" required autofocus>
+        <label for="password" class="sr-only">Password</label>
+        <input id="password" type="password" class="form-control" placeholder="Password" required>
+        <button class="btn btn-md btn-dark btn-block" id="signInButton" type="button">Sign in</button>
+        <small class="text-muted font-weight-light">Don't have an account? <a href='#' id="signupLink">Sign up</a></small>
+    </form>
 </div>
 
 <div id="signupPage">
-    <h1>Sign Up</h1>
-    <input class="mdl-textfield__input" style="display:inline;width:auto;" type="text" id="email" name="email"placeholder="Email"/>
-    <br>
-    <input class="mdl-textfield__input" style="display:inline;width:auto;" type="password" id="password" name="password"placeholder="Password"/>
-    <br>
-    <input class="mdl-textfield__input" style="display:inline;width:auto;" type="password" id="reEnteredPassword" name="password"placeholder="Re-enter Password"/>
-    <br>
-    <br>
-    <button class="mdl-button mdl-js-button mdl-button--raised" id="signUpButton" name="signup">Sign Up</button>
-    <br>
-    <a href='#' id="loginLink">Already have an account? Login</a>
+    <form class="form-signup">
+        <h1 class="h4 mb-3 font-weight-bold">Sign up</h1>
+        <label for="email1" class="sr-only">Email address</label>
+        <input id="email1" type="email" class="form-control" placeholder="Email address" required autofocus>
+        <label for="password1" class="sr-only">Password</label>
+        <input id="password1" type="password" class="form-control" placeholder="Password" required>
+        <label for="reEnteredPassword" class="sr-only">Re-enter Password</label>
+        <input id="reEnteredPassword" type="password" class="form-control" placeholder="Re-enter Password" required>
+        <button class="btn btn-md btn-dark btn-block" id="signUpButton" type="button">Sign up</button>
+        <small class="text-muted font-weight-light">Already have an account? <a href='#' id="loginLink">Login</a></small>
+    </form>
 </div>
 
 <div id="mainPage">
+    <div class="d-flex flex-column justify-content-between">
 
-    <div class="header">
-        <input type="image" src="images/back.png" id="settings-left"
-               alt="Back" value="Back"/>
-        <span id="title">Home</span>
-        <input type="image" src="images/profile.png" id="settings-right"
-               alt="Settings" value="Settings"/>
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center header">
+            <a id="settings-left" href="#"><i class="fas fa-angle-left fa-lg"></i></a>
+            <span id="h4 font-weight-bold title">Home</span>
+            <a id="settings-right" href="#"><i class="fas fa-user-circle"></i></a>
+        </div>
+
+        <!-- Tab content -->
+        <div class="d-flex flex-grow-1">
+            <div id="Home" class="tabcontent">
+                <p id="offer">You are not currently at a partnered store.</p>
+                <a href='#' id="stores-text-link">See Featured Stores</a>
+            </div>
+
+            <div id="Spend" class="tabcontent">
+                <p>Earn 500 Kin for every $1 spent.</p>
+                <p id="featured-stores">Null</p>
+            </div>
+
+            <div id="Wallet" class="tabcontent">
+                <p>Balance: <span id="balance">Unknown</span></p>
+                <p>Transactions: <span id="transactions">Empty</span></p>
+            </div>
+
+            <div id="Settings" class="tabcontent">
+                <p id="userEmail"></p>
+                <button id="LogoutButton">Logout</button>
+            </div>
+        </div>
+
+        <!-- Nav bar -->
+        <div class="d-flex justify-content-between align-items-center bottomnavbar">
+            <a id="HomeButton" class="tablinks" href="#"><i class="fas fa-home"></i></a>
+            <a id="WalletButton" class="tablinks" href="#"><i class="fas fa-wallet"></i></a>
+            <a id="SpendButton" class="tablinks" href="#"><i class="fas fa-gift"></i></a>
+        </div>
+
     </div>
-
-    <!-- Tab content -->
-    <div id="Home" class="tabcontent">
-        <p>You are not currently at a partnered store.</p>
-        <a href='#' id="stores-text-link">See Featured Stores</a>
-    </div>
-
-    <div id="Stores" class="tabcontent">
-        <p>Earn 500 Kin for every $1 spent.</p>
-        <p id="featured-stores">Null</p>
-    </div>
-
-    <div id="Wallet" class="tabcontent">
-        <p>Balance: <span id="balance">Unknown</span></p>
-        <p>Transactions: <span id="transactions">Empty</span></p>
-    </div>
-
-    <div id="Settings" class="tabcontent">
-        <p id="userEmail"></p>
-        <button id="LogoutButton">Logout</button>
-    </div>
-
-    <!-- Tab links -->
-    <div class="tab">
-        <button id="HomeButton" class="tablinks">Home</button>
-        <button id="StoresButton" class="tablinks">Stores</button>
-        <button id="WalletButton" class="tablinks">Wallet</button>
-    </div>
-
 </div>
 
+<!--    <div class="header">-->
+<!--        <input type="image" src="images/back.png" id="settings-left"-->
+<!--               alt="Back" value="Back"/>-->
+<!--        <span id="title">Home</span>-->
+<!--        <input type="image" src="images/profile.png" id="settings-right"-->
+<!--               alt="Settings" value="Settings"/>-->
+<!--    </div>-->
+
+
+
+<!--    &lt;!&ndash; Tab links &ndash;&gt;-->
+<!--    <div class="tab">-->
+<!--        <button id="HomeButton" class="tablinks">Home</button>-->
+<!--        <button id="WalletButton" class="tablinks">Wallet</button>-->
+<!--        <button id="SpendButton" class="tablinks">Spend</button>-->
+<!--    </div>-->
+
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
 </html>
