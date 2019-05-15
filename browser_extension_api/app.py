@@ -26,20 +26,15 @@ app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 SSL_mode = 'allow'
 
-STORES = [
-    {'name': 'Amazon', 'url': 'www.amazon.com'},
-    {'name': 'Walmart', 'url': 'www.walmart.com'},
-    {'name': 'Ebay', 'url': 'www.ebay.com'}
-]
+STORES = {"stores": [
+    "www.google.com",
+    "www.amazon.com"
+]}
 
 EARN_PRICE_PER_DOLLAR = 100
-SPEND_PRICE_PER_DOLLAR = 1000
+SPEND_PRICE_PER_DOLLAR = 10000
 
-GIFTCARD_TYPES = ['Amazon',
-                  'Mcdonalds',
-                  'Uber',
-                  'Spotify',
-                  'Netflix']
+GIFTCARD_TYPES = ['Amazon']
 GIFTCARD_AMOUNTS = [5, 10, 25]
 MAX_GIFTCARD_QUANTITY = 10
 MIN_GIFTCARD_QUANTITY = 1
@@ -125,21 +120,27 @@ def update_fcm_token():
     return jsonify(), 201
 
 
-# @app.route('/user_data', methods=['GET'])
-# @http_auth.login_required
-# def user_data():
-#     user = User.query.filter_by(uid=g.uid).first()
-#     return jsonify({
-#         "stores": STORES,
-#         "balance": user.balance,
-#         "transactions": user.transactions
-#     }), 200
+@app.route('/update_public_address', methods=['POST'])
+@http_auth.login_required
+def update_public_address():
+    if 'public_address' not in request.get_json():
+        return jsonify(), 500
+    public_address = request.get_json()['public_address']
+    user = User.query.filter_by(uid=g.uid).first()
+    user.public_address = public_address
+    try:
+        db.session.commit()
+    except AssertionError as err:
+        db.session.rollback()
+        return jsonify(), 500
+    # TODO: First time installing the app, create a earn transaction for the user's balance - no?
+    return jsonify(), 201
 
 
 @app.route('/stores', methods=['GET'])
 @http_auth.login_required
 def stores():
-    return jsonify({"stores": ['www.google.com', 'www.amazon.com']}), 200
+    return jsonify(STORES), 200
 
 
 @app.route('/affiliate_link', methods=['GET'])
@@ -147,7 +148,7 @@ def stores():
 def affiliate_link():
     user = User.query.filter_by(uid=g.uid).first()
     # Every url needs to have http(s):// at the start
-    url = "http://www.google.com"
+    url = "http://www.works.com"
     # Generate the affiliate url
     return jsonify({"url": url}), 200
 
@@ -219,23 +220,6 @@ def notify_extension(user, transaction):
 # 
 #
 
-@app.route('/update_public_address', methods=['POST'])
-@http_auth.login_required
-def update_public_address():
-    if 'public_address' not in request.get_json():
-        return jsonify(), 500
-    public_address = request.get_json()['public_address']
-    user = User.query.filter_by(uid=g.uid).first()
-    user.public_address = public_address
-    try:
-        db.session.commit()
-    except AssertionError as err:
-        db.session.rollback()
-        return jsonify(), 500
-    # First time installing the app, create a earn transaction for the user's balance - no?
-    return jsonify(), 201
-
-
 def valid_order(order):
     # Ensure all information is present
     if not all(x in order for x in ['email', 'type', 'amount', 'quantity', 'total']):
@@ -278,13 +262,6 @@ def buy_giftcard():
     # Add to transactions
     # Submit the order
     return jsonify(), 200
-
-
-@app.route('/spend_price_per_dollar', methods=['GET'])
-@http_auth.login_required
-def spend_price_per_dollar():
-    # TODO: Get price from an environment variable
-    return jsonify({"price": SPEND_PRICE_PER_DOLLAR}), 200
 
 
 if __name__ == '__main__':

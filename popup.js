@@ -15,10 +15,12 @@ const messaging = firebase.messaging();
 // Add the public key generated from the console here.
 messaging.usePublicVapidKey('BJRkoCi2Qzx5jYe_qxL1hD2OkWAibd9xxxrRHz6Sn2IhUR2r1wNXK_YIBwy9GsQ58tPwpuI4wQVQhxZIvgRaXuU');
 
-const BASE_URL = 'http://571a70ca.ngrok.io';
+const BASE_URL = 'http://12fe9075.ngrok.io';
 const REGISTER_ROUTE = '/register';
 const FCM_TOKEN_ROUTE = '/update_fcm_token';
 const STORES_ROUTE = '/stores';
+
+
 
 async function fetchStoresFromServer(){
     console.log('Fetching stores from server...');
@@ -50,8 +52,12 @@ async function fetchStoresFromServer(){
 }
 
 async function setStores(){
-    const stores = await fetchStoresFromServer();
-    chrome.storage.local.set({'stores': stores}, function(){});
+    try{
+        const stores = await fetchStoresFromServer();
+        chrome.storage.local.set({'stores': stores}, function(){});
+    } catch (err){
+        console.log("Unable to fetch stores: " + err);
+    }
 }
 
 // Handle incoming messages. Called when:
@@ -173,6 +179,7 @@ function Home() {
                     // If couldnt make contact with content script, try again?
                 }
             } else {
+                //TODO: create link for the activate link
                 document.getElementById("offer").textContent = offer;
             }
         });
@@ -205,8 +212,10 @@ function Settings() {
     // Set the user details
     document.getElementById("userEmail").textContent = firebase.auth().currentUser.email;
     // Hide the nav bar
-    let tab = document.getElementsByClassName("tab");
-    tab[0].style.display = "none";
+    let tab = document.getElementsByClassName("bottomnavbar");
+    tab[0].style.visibility = 'hidden';
+    // Hide the profile button
+    document.getElementById("settings-right").style.visibility = "hidden";
 
 
     // Make back button visible and add listener
@@ -217,21 +226,53 @@ function Settings() {
         // Hide the back button
         document.getElementById("settings-left").style.visibility = "hidden";
         // Show the navigation bar again
-        tab[0].style.display = "flex";
+        tab[0].style.visibility = 'visible';
+        // Show the profile button
+        document.getElementById("settings-right").style.visibility = "visible";
+    }, false);
+
+    // Add listener for the reset password page
+    document.getElementById("ResetPasswordButton").addEventListener('click', function () {
+        openTab("ResetPasswordButton", "Reset Password")
     }, false);
 
     // Add listener for the logout button
     document.getElementById("LogoutButton").addEventListener('click', function () {
         // Hide the back button
         document.getElementById("settings-left").style.visibility = "hidden";
-        // Show the navigation bar again
-        tab[0].style.display = "flex";
+        // Show the navigation bar
+        tab[0].style.visibility = 'visible';
+        // Show the profile button
+        document.getElementById("settings-right").style.visibility = "visible";
         // sign out the user
         firebase.auth().signOut();
         // Delete the fcm token, this should disable push notifications
         deleteToken();
         // Delete activated list of stores
         deleteActivatedStores();
+    }, false);
+}
+
+function ResetPassword(){
+    document.getElementById("settings-left").addEventListener('click', function () {
+        // Send back to settings page
+        openTab("settings-right", "Settings");
+    }, false);
+
+    // Add listener for the update button
+    document.getElementById("SendLink").addEventListener('click', function () {
+        const email = document.getElementById('email2').value;
+        if (email.length <= 0) {
+            document.getElementById("modal-text").textContent = 'Please enter an email address.';
+            return;
+        }
+        firebase.auth().sendPasswordResetEmail(email).then(function () {
+            document.getElementById("modal-text").textContent = "Email was successfully sent";
+        }).catch(function (err) {
+            document.getElementById("modal-text").textContent = err;
+        });
+        // Trigger Modal
+        $('#MyModal').modal('show');
     }, false);
 }
 
@@ -248,12 +289,14 @@ function openTab(buttonId, tabId) {
         Home();
     } else if (tabId === 'Settings') {
         Settings();
+    } else if (tabId === 'Reset Password'){
+        ResetPassword();
     }
 
     // Get all elements with class="tabcontent" and hide them
     tabcontent = document.getElementsByClassName("tabcontent");
     for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
+        tabcontent[i].style.display= 'none';
     }
 
     // Get all elements with class="tablinks" and remove the class "active"
@@ -263,11 +306,11 @@ function openTab(buttonId, tabId) {
     }
 
     // Replace the title text
-    var title = document.getElementById("title").firstChild;
+    let title = document.getElementById("title").firstChild;
     title.textContent = tabId;
 
     // Show the current tab, and add an "active" class to the button that opened the tab
-    document.getElementById(tabId).style.display = "flex";
+    document.getElementById(tabId).style.display= 'block';
     document.getElementById(buttonId).className += " active";
 }
 
@@ -278,34 +321,37 @@ async function signInTasks(email, password) {
         init();
     } catch (err) {
         if (err.message === 'setIdToken') {
-            //TODO: how to handle this error
-            alert("setIdToken error");
+            document.getElementById("modal-text").textContent = 'Sign In failed. Please try again later.';
         } else if (err.code === 'auth/invalid-email') {
-            alert('The email address is not valid.');
+            document.getElementById("modal-text").textContent = 'The email address is not valid.';
         } else if (err.code === 'auth/user-disabled') {
-            alert('The user corresponding to the given email has been disabled..');
+            document.getElementById("modal-text").textContent = 'The user corresponding to the given email has been disabled.';
         } else if (err.code === 'auth/user-not-found') {
-            alert('There is no user corresponding to the given email.');
+            document.getElementById("modal-text").textContent = 'There is no user corresponding to the given email.';
         } else if (err.code === 'auth/wrong-password') {
-            alert('The password is invalid for the given email, or the account corresponding to the email does not have a password set.');
+            document.getElementById("modal-text").textContent = 'Incorrect Password.';
         } else {
-            alert('Sign In failed for an unknown reason. ' + err.message);
+            document.getElementById("modal-text").textContent = 'Sign In failed. Please try again later.';
         }
+        console.log(err.message);
+        $('#MyModal').modal('show');
         return;
     }
-    setFCMToken();
     setStores();
+    setFCMToken();
 }
 
 function toggleSignIn() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     if (email.length <= 0) {
-        alert('Please enter an email address.');
+        document.getElementById("modal-text").textContent = 'Please enter an email address.';
+        $('#MyModal').modal('show');
         return;
     }
     if (password.length <= 0) {
-        alert('Please enter a password.');
+        document.getElementById("modal-text").textContent = 'Please enter a password.';
+        $('#MyModal').modal('show');
         return;
     }
     // TODO, no need for listeners for signin and signout, modify the code below to use
@@ -407,22 +453,24 @@ async function signUpTasks(email, password) {
                     console.log('Unable to delete user');
                 }
             }
-            alert("SetIdToken or sendUserToServer Error");
+            document.getElementById("modal-text").textContent = 'Sign In failed. Please try again later.';
         } else if (err.code === 'auth/email-already-in-use') {
-            alert('There already exists an account with the given email address.');
+            document.getElementById("modal-text").textContent = 'There already exists an account with the given email address.';
         } else if (err.code === 'auth/invalid-email') {
-            alert('The email address is not valid.');
+            document.getElementById("modal-text").textContent = 'The email address is not valid.';
         } else if (err.code === 'auth/operation-not-allowed') {
-            alert('Email/password accounts are not enabled. Please contact us to resolve this issue.');
+            document.getElementById("modal-text").textContent = 'Sorry, we are currently not accepting new users. Please try again later';
         } else if (err.code === 'auth/weak-password') {
-            alert('The password is not strong enough.');
+            document.getElementById("modal-text").textContent = 'Your password is not strong enough.';
         } else {
-            alert('Sign up failed for an unknown reason. ' + err);
+            document.getElementById("modal-text").textContent = 'Sign In failed. Please try again later.';
         }
+        console.log(err.message);
+        $('#MyModal').modal('show');
         return;
     }
-    setFCMToken();
     setStores();
+    setFCMToken();
 }
 
 function handleSignUp() {
@@ -430,15 +478,18 @@ function handleSignUp() {
     const password = document.getElementById('password1').value;
     const reEnteredPassword = document.getElementById('reEnteredPassword').value;
     if (email.length <= 0) {
-        alert('Please enter an email address.');
+        document.getElementById("modal-text").textContent = 'Please enter an email address.';
+        $('#MyModal').modal('show');
         return;
     }
     if (password.length <= 0) {
-        alert('Please enter a password.');
+        document.getElementById("modal-text").textContent = 'Please enter a password.';
+        $('#MyModal').modal('show');
         return;
     }
     if (password !== reEnteredPassword) {
-        alert('Your passwords do not match.');
+        document.getElementById("modal-text").textContent = 'Your passwords do not match.';
+        $('#MyModal').modal('show');
         return;
     }
     signUpTasks(email, password);
@@ -507,16 +558,16 @@ function handleSignUp() {
 //}
 
 function hideAllPages() {
-    document.getElementById("loginPage").style.display = "none";
-    document.getElementById("signupPage").style.display = "none";
-    document.getElementById("mainPage").style.display = "none";
+    document.getElementById("loginPage").style.display = 'none';
+    document.getElementById("signupPage").style.display = 'none';
+    document.getElementById("mainPage").style.display = 'none';
 }
 
 function showMainPage() {
     // Hide the login page, sign up page and the main page
     hideAllPages();
     //Show the main page
-    document.getElementById("mainPage").style.display = "flex";
+    document.getElementById("mainPage").style.display = 'block';
     // Set listeners to all the buttons on the main page
     document.getElementById("HomeButton").addEventListener('click', function () {
         openTab("HomeButton", "Home");
@@ -541,7 +592,7 @@ function showSignupPage() {
     // Hide the login page, sign up page and the main page
     hideAllPages();
     // Show the login page
-    document.getElementById('signupPage').style.display = "flex";
+    document.getElementById('signupPage').style.display = 'flex';
     // Set listeners to all the buttons on the sign up page.
     document.getElementById('signUpButton').addEventListener('click', handleSignUp, false);
     document.getElementById('loginLink').addEventListener('click', showLoginPage, false);
@@ -551,7 +602,8 @@ function showLoginPage() {
     // Hide the login page, sign up page and the main page
     hideAllPages();
     // Show the login page
-    document.getElementById('loginPage').style.display = "flex";
+    document.getElementById('loginPage').style.display = 'flex';
+    console.log('shwoing login age');
     // Set listeners to all the buttons on the login page.
     document.getElementById('signInButton').addEventListener('click', toggleSignIn, false);
     document.getElementById('signupLink').addEventListener('click', showSignupPage, false);

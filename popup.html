@@ -30,76 +30,104 @@
 <div id="signupPage">
     <form class="form-signup">
         <h1 class="h4 mb-3 font-weight-bold">Sign up</h1>
-        <label for="email1" class="sr-only">Email address</label>
+        <label for="email1" class="sr-only">Email address: </label>
         <input id="email1" type="email" class="form-control" placeholder="Email address" required autofocus>
-        <label for="password1" class="sr-only">Password</label>
+        <label for="password1" class="sr-only">Password: </label>
         <input id="password1" type="password" class="form-control" placeholder="Password" required>
-        <label for="reEnteredPassword" class="sr-only">Re-enter Password</label>
-        <input id="reEnteredPassword" type="password" class="form-control" placeholder="Re-enter Password" required>
+        <label for="reEnteredPassword" class="sr-only">Confirm Password: </label>
+        <input id="reEnteredPassword" type="password" class="form-control" placeholder="Confirm Password" required>
         <button class="btn btn-md btn-dark btn-block" id="signUpButton" type="button">Sign up</button>
         <small class="text-muted font-weight-light">Already have an account? <a href='#' id="loginLink">Login</a></small>
     </form>
 </div>
 
 <div id="mainPage">
-    <div class="d-flex flex-column justify-content-between">
 
-        <!-- Header -->
-        <div class="d-flex justify-content-between align-items-center header">
-            <a id="settings-left" href="#"><i class="fas fa-angle-left fa-lg"></i></a>
-            <span id="h4 font-weight-bold title">Home</span>
-            <a id="settings-right" href="#"><i class="fas fa-user-circle"></i></a>
-        </div>
-
-        <!-- Tab content -->
-        <div class="d-flex flex-grow-1">
-            <div id="Home" class="tabcontent">
-                <p id="offer">You are not currently at a partnered store.</p>
-                <a href='#' id="stores-text-link">See Featured Stores</a>
-            </div>
-
-            <div id="Spend" class="tabcontent">
-                <p>Earn 500 Kin for every $1 spent.</p>
-                <p id="featured-stores">Null</p>
-            </div>
-
-            <div id="Wallet" class="tabcontent">
-                <p>Balance: <span id="balance">Unknown</span></p>
-                <p>Transactions: <span id="transactions">Empty</span></p>
-            </div>
-
-            <div id="Settings" class="tabcontent">
-                <p id="userEmail"></p>
-                <button id="LogoutButton">Logout</button>
-            </div>
-        </div>
-
-        <!-- Nav bar -->
-        <div class="d-flex justify-content-between align-items-center bottomnavbar">
-            <a id="HomeButton" class="tablinks" href="#"><i class="fas fa-home"></i></a>
-            <a id="WalletButton" class="tablinks" href="#"><i class="fas fa-wallet"></i></a>
-            <a id="SpendButton" class="tablinks" href="#"><i class="fas fa-gift"></i></a>
-        </div>
-
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center header">
+        <a id="settings-left" href="#"><i class="fas fa-angle-left"></i></a>
+        <span id="title">Kino</span>
+        <a id="settings-right" href="#"><i class="fas fa-user-circle"></i></a>
     </div>
+
+    <!-- Tab content -->
+    <div id="Home" class="tabcontent">
+        <p id="offer">You are not currently at a partnered store.</p>
+        <a href='#' id="stores-text-link">See Stores</a>
+    </div>
+
+    <div id="Spend" class="tabcontent">
+        <i class="fas fa-angle-left"></i>
+        <p>You can redeem your Kin for free giftcards. Please download our app to get started:</p>
+        <button class="btn btn-sm btn-outline-dark downloadButton" type="button">Download</button>
+    </div>
+
+    <div id="Wallet" class="tabcontent">
+        <i class="fas fa-wallet"></i>
+        <p>To see your Kin balance and transaction history, please download our app:</p>
+        <button class="btn btn-sm btn-outline-dark downloadButton" type="button">Download</button>
+    </div>
+
+    <div id="Settings" class="tabcontent">
+
+        <div class="d-flex justify-content-start">
+            <span>Email: \</span>
+            <span id="userEmail"></span>
+        </div>
+        <div class="d-flex justify-content-between">
+            <span>Stores</span>
+            <a href="#"><i class="fas fa-angle-right"></i></a>
+        </div>
+        <div class="d-flex justify-content-between">
+            <span>FAQ</span>
+            <a href="#"><i class="fas fa-angle-right"></i></a>
+        </div>
+        <div class="d-flex justify-content-between">
+            <span>Rate Us</span>
+            <a href="#"><i class="fas fa-angle-right"></i></a>
+        </div>
+        <div class="d-flex justify-content-between">
+            <span>Reset Password</span>
+            <a href="#" id="ResetPasswordButton"><i class="fas fa-angle-right"></i></a>
+        </div>
+        <p></p>
+        <button class="btn btn-sm btn-dark btn-block" type="button" id="LogoutButton">Logout</button>
+    </div>
+
+    <div id="Reset Password" class="tabcontent">
+        <form class="form-group">
+            <p class="mb-2">You can request an email reset link:</p>
+<!--            <small id="emailHelp" class="form-text mb-2">Request an email reset link</small>-->
+            <label for="email2" class="sr-only">Email address: </label>
+            <input id="email2" type="email" class="form-control form-control-sm mb-2" placeholder="Email address" required autofocus>
+            <button class="btn btn-sm btn-dark btn-block" type="button" id="SendLink">Send Link</button>
+<!--            <div class="alert alert-success pt-2 pb-2 pl-2 pr-2 mt-2 mb-2 small" id="ResetPasswordSuccessAlert"></div>-->
+<!--            <div class="alert alert-danger pt-2 pb-2 pl-2 pr-2 mt-2 mb-2 small" id="ResetPasswordFailedAlert"></div>-->
+        </form>
+    </div>
+
+    <!-- Nav bar -->
+    <div class="d-flex justify-content-around align-items-center align-bottom bottomnavbar">
+        <a id="HomeButton" class="tablinks" href="#"><i class="fas fa-home"></i></a>
+        <a id="WalletButton" class="tablinks" href="#"><i class="fas fa-wallet"></i></a>
+        <a id="SpendButton" class="tablinks" href="#"><i class="fas fa-gift"></i></a>
+    </div>
+
 </div>
 
-<!--    <div class="header">-->
-<!--        <input type="image" src="images/back.png" id="settings-left"-->
-<!--               alt="Back" value="Back"/>-->
-<!--        <span id="title">Home</span>-->
-<!--        <input type="image" src="images/profile.png" id="settings-right"-->
-<!--               alt="Settings" value="Settings"/>-->
-<!--    </div>-->
-
-
-
-<!--    &lt;!&ndash; Tab links &ndash;&gt;-->
-<!--    <div class="tab">-->
-<!--        <button id="HomeButton" class="tablinks">Home</button>-->
-<!--        <button id="WalletButton" class="tablinks">Wallet</button>-->
-<!--        <button id="SpendButton" class="tablinks">Spend</button>-->
-<!--    </div>-->
+<!--Messages modal-->
+<div class="modal" id="MyModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <p id="modal-text"></p>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 

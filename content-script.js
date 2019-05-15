@@ -121,7 +121,7 @@ function showActivateNotification(host) {
         chrome.runtime.sendMessage({type: "notificationClicked", url: host}, function(response){
             handleNotificationClickedResponse(host, response);
         });
-        //this.parentNode.style.display = "none";
+        this.parentNode.style.display = "none";
     };
 
     //TODO: look at lolli source code for styling, make it better
@@ -134,7 +134,7 @@ function showActivateNotification(host) {
 function handleNotificationClickedResponse(host, response){
     if (response.status === 'success'){
         // Redirect to affiliate link
-        chrome.tabs.update(sender.tab.id, {url: response.message}, function(){});
+        location.href = response.message;
         // Add link to activated list
         addHostToActivated(host);
     } else if (response.status === 'failed'){
@@ -189,7 +189,6 @@ function getActivatedStores(){
         });
     });
 }
-
 
 function onPartneredStore(host){
     return new Promise(async function(resolve, reject) {

@@ -14,7 +14,7 @@ firebase.initializeApp(config);
 // messages.
 const messaging = firebase.messaging();
 
-const BASE_URL = 'http://571a70ca.ngrok.io';
+const BASE_URL = 'http://12fe9075.ngrok.io';
 const FCM_TOKEN_ROUTE = '/update_fcm_token';
 const STORES_ROUTE = '/stores';
 const AFFILIATE_LINK_ROUTE = '/affiliate_link';
@@ -133,7 +133,7 @@ async function fetchAffiliateLink(host){
     const idToken = await getIdToken();
     return new Promise(function(resolve, reject) {
         fetch(BASE_URL + AFFILIATE_LINK_ROUTE, {
-            method: 'get',
+            method: 'GET',
             headers: {
                 "Content-type": "application/json",
                 "Authorization": "Token " + idToken
