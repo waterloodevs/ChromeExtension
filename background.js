@@ -14,10 +14,10 @@ firebase.initializeApp(config);
 // messages.
 const messaging = firebase.messaging();
 
-const BASE_URL = 'http://12fe9075.ngrok.io';
+const BASE_URL = 'http://134b1ba0.ngrok.io';
 const FCM_TOKEN_ROUTE = '/update_fcm_token';
 const STORES_ROUTE = '/stores';
-const AFFILIATE_LINK_ROUTE = '/affiliate_link';
+const AFFILIATE_LINK_ROUTE = '/affiliate_link/';
 
 function getIdToken() {
     return new Promise(function(resolve, reject) {
@@ -65,6 +65,44 @@ async function setStores(){
     chrome.storage.local.set({'stores': stores}, function () {});
 }
 
+async function fetchBalanceFromServer(){
+    console.log('Fetching balance from server...');
+    const idToken = await getIdToken();
+    return new Promise(function(resolve, reject) {
+        fetch(BASE_URL + BALANCE_ROUTE, {
+            method: 'get',
+            headers: {
+                "Content-type": "application/json",
+                "Authorization": "Token " + idToken
+            }
+        }).then(function (response) {
+            if (response.status !== 200) {
+                console.log('Failed response. Status Code: ' + response.status);
+                reject(Error('fetchBalanceFromServer'));
+            } else {
+                response.json().then(function(data) {
+                    console.log("Fetched balance from server successfully!");
+                    const obj = JSON.stringify(data, null, 2);
+                    const json = JSON.parse(obj);
+                    resolve(json.balance);
+                });
+            }
+        }).catch(function (err) {
+            console.log('Fetch Error: ', err);
+            reject(Error('fetchBalanceFromServer'));
+        });
+    });
+}
+
+async function setBalance(){
+    try{
+        const balance = await fetchBalanceFromServer();
+        chrome.storage.local.set({'balance': balance}, function(){});
+    } catch (err) {
+        console.log("Unable to fetch balance: " + err);
+    }
+}
+
 // Handle incoming messages. Called when:
 // - a message is received while the app has focus
 // - the user clicks on an app notification created by a service worker
@@ -74,6 +112,7 @@ messaging.onMessage(function (payload) {
     const obj = JSON.stringify(payload, null, 2);
     const json = JSON.parse(obj);
     const data = json.data;
+    setBalance();
     chrome.notifications.create(
         'notificationid',
         {
@@ -132,7 +171,7 @@ async function fetchAffiliateLink(host){
     console.log('Fetching affiliate link from server...');
     const idToken = await getIdToken();
     return new Promise(function(resolve, reject) {
-        fetch(BASE_URL + AFFILIATE_LINK_ROUTE, {
+        fetch(BASE_URL + AFFILIATE_LINK_ROUTE + host, {
             method: 'GET',
             headers: {
                 "Content-type": "application/json",

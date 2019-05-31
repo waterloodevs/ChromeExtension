@@ -1,7 +1,12 @@
 {
   "name": "Kino",
   "version": "0.1",
-  "description": "Earn Kin for shopping online!",
+  "description": "Earn Kin for shopping online.",
+  "icons": {
+    "16": "images/logo.png",
+    "48": "images/logo.png",
+    "128": "images/logo.png"
+  },
   "content_scripts": [
     {
       "matches": [
@@ -20,6 +25,9 @@
     "page": "background.html",
     "persistent": true
   },
+  "web_accessible_resources": [
+    "images/logo.png"
+  ],
   "permissions": [
     "tabs",
     "activeTab",

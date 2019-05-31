@@ -5,6 +5,14 @@ body {
     border: 1px solid #ccc;
 }
 
+.btn:focus, .btn:active:focus, .btn.active:focus {
+    outline: none !important;
+    box-shadow: none;
+}
+
+.fa-angle-left, .fa-angle-right, .fa-user-circle{
+    color: black;
+}
 
 /*
 LOGIN PAGE
@@ -80,6 +88,133 @@ SIGN UP PAGE
     border-top-right-radius: 0;
 }
 
+#status-img {
+    color: darkgrey;
+}
+
+/*
+WALLET PAGE
+*/
+#balance {
+    /*background-color: #00aaff;*/
+    /*border-radius: 5px;*/
+    /*border: 1px solid darkgray;*/
+    /*color: black;*/
+    /*line-height: 1;*/
+    /*!*font-weight: bold;*!*/
+    /*display:inline-block;*/
+    min-width: 100px;
+    pointer-events: none;
+    width: 100%;
+}
+.btn-group {
+    width: 100%;
+}
+#earned-btn, #spent-btn {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    outline: none !important;
+    box-shadow: none;
+}
+.transactions {
+    border-radius: 5px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border: 1px solid black;
+    height: 170px;
+    align-content: center;
+    align-items: center;
+    padding-top: 50px;
+}
+
+/*
+WITHDRAW PAGE
+*/
+#Withdraw{
+    text-align: left;
+}
+
+/*
+REDEEM PAGE
+*/
+#Redeem {
+    text-align: left;
+}
+.text-muted {
+    display: block;
+    line-height: 1.5 !important;
+}
+.giftcard-img {
+    width: 100%;
+    height: 100%;
+    transition: transform 225ms ease-in-out;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    outline: none !important;
+    box-shadow: none;
+}
+
+/*
+GIFTCARD PAGE
+*/
+.row {
+    align-items: center;
+}
+.total-row{
+    align-items: center;
+    outline: 1px solid black;
+}
+.col-right{
+    outline: 1px solid black;
+}
+#Giftcard {
+    text-align: left;
+}
+.giftcard-img-small {
+    width: 100%;
+    height: 100%;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    outline: none !important;
+    box-shadow: none;
+}
+
+
+
+/*
+RESET PAGE
+*/
+#resetPage {
+    display: none;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+}
+.form-reset {
+    width: 100%;
+    margin: 15px;
+}
+.form-reset .form-control {
+    position: relative;
+    box-sizing: border-box;
+    height: auto;
+    padding: 10px;
+    font-size: 14px;
+}
+.form-reset .form-control:focus {
+    z-index: 2;
+}
+.form-reset input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
 
 /*
 MAIN PAGE
@@ -143,21 +278,9 @@ HEADER
 #settings-left {
     visibility: hidden;
 }
-#settings-left{
-    color: black;
-}
-#settings-left:hover {
-    color: black;
-}
 #title {
     font-size: 16px;
     font-weight: bold;
-}
-#settings-right{
-    color: black;
-}
-#settings-right:hover {
-    color: black;
 }
 
 
@@ -167,12 +290,15 @@ TAB CONTENT
 .mainPage {
     width: 100%;
     height: 100%;
-    position: relative;
     display: none;
 }
 .tabcontent {
     margin: 15px 15px;
     display: none;
+    text-align: center;
+}
+.settings{
+    text-align: left;
 }
 
 /*
@@ -184,7 +310,7 @@ NAV BAR
     /*bottom: 0;*/
 }
 .tablinks{
-    color: black;
+    color: grey;
     position: relative;
     text-decoration: none;
 }
@@ -195,12 +321,12 @@ NAV BAR
 
 .tablinks:hover::after {
     color: black;
-    content: "";
-    position: absolute;
-    left: -40%;
-    right: -40%;
-    bottom: -5px;
-    border: 2px solid black;
+    /*content: "";*/
+    /*position: absolute;*/
+    /*left: -40%;*/
+    /*right: -40%;*/
+    /*bottom: -5px;*/
+    /*border: 2px solid black;*/
 }
 
 .tablinks.active {
