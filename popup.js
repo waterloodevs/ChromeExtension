@@ -15,123 +15,123 @@ const messaging = firebase.messaging();
 // Add the public key generated from the console here.
 messaging.usePublicVapidKey('BJRkoCi2Qzx5jYe_qxL1hD2OkWAibd9xxxrRHz6Sn2IhUR2r1wNXK_YIBwy9GsQ58tPwpuI4wQVQhxZIvgRaXuU');
 
-const BASE_URL = 'http://134b1ba0.ngrok.io';
+const BASE_URL = 'http://abe74c55.ngrok.io';
 const REGISTER_ROUTE = '/register';
 const FCM_TOKEN_ROUTE = '/update_fcm_token';
 const STORES_ROUTE = '/stores';
 const BALANCE_ROUTE = '/balance';
-const GIFTCARD_ROUTE = '/buy_giftcard';
-const WITHDRAW_ROUTE = '/withdraw';
+// const GIFTCARD_ROUTE = '/buy_giftcard';
+// const WITHDRAW_ROUTE = '/withdraw';
 
-async function sendWithdrawRequestToServer(publicAddress){
-    console.log('Sending withdraw request to server...');
-    const idToken = await getIdToken();
-    return new Promise(function(resolve, reject) {
-        fetch(BASE_URL + WITHDRAW_ROUTE, {
-            method: 'post',
-            headers: {
-                "Content-type": "application/json",
-                "Authorization": "Token " + idToken
-            },
-            body: JSON.stringify({
-                "public_address": publicAddress
-            })
-        }).then(function (response) {
-            if (response.status !== 201) {
-                console.log('Withdraw Request Failed response. Status Code: ' + response.status);
-                reject(Error("sendOrderToServer"));
-            } else {
-                console.log("Withdraw request was sent successfully!")
-                resolve("Success");
-            }
-        }).catch(function (err) {
-            reject(Error("sendWithdrawRequestToServer"));
-        });
-    })
-}
+// async function sendWithdrawRequestToServer(publicAddress){
+//     console.log('Sending withdraw request to server...');
+//     const idToken = await getIdToken();
+//     return new Promise(function(resolve, reject) {
+//         fetch(BASE_URL + WITHDRAW_ROUTE, {
+//             method: 'post',
+//             headers: {
+//                 "Content-type": "application/json",
+//                 "Authorization": "Token " + idToken
+//             },
+//             body: JSON.stringify({
+//                 "public_address": publicAddress
+//             })
+//         }).then(function (response) {
+//             if (response.status !== 201) {
+//                 console.log('Withdraw Request Failed response. Status Code: ' + response.status);
+//                 reject(Error("sendOrderToServer"));
+//             } else {
+//                 console.log("Withdraw request was sent successfully!")
+//                 resolve("Success");
+//             }
+//         }).catch(function (err) {
+//             reject(Error("sendWithdrawRequestToServer"));
+//         });
+//     })
+// }
 
-async function withdrawKin(){
-    const publicAddress = document.getElementById("publicAddress").value;
-    if (publicAddress === ''){
-        document.getElementById("modal-text").textContent = 'Please enter a public address.';
-        $('#MyModal').modal('show');
-        return;
-    }
-    try {
-        await sendWithdrawRequestToServer(publicAddress);
-        document.getElementById("modal-text").textContent = 'Success! We sent your Kin to the specified public address.';
-    } catch (err){
-        document.getElementById("modal-text").textContent = 'Request failed. Please try again later.';
-    }
-    $('#MyModal').modal('show');
-}
+// async function withdrawKin(){
+//     const publicAddress = document.getElementById("publicAddress").value;
+//     if (publicAddress === ''){
+//         document.getElementById("modal-text").textContent = 'Please enter a public address.';
+//         $('#MyModal').modal('show');
+//         return;
+//     }
+//     try {
+//         await sendWithdrawRequestToServer(publicAddress);
+//         document.getElementById("modal-text").textContent = 'Success! We sent your Kin to the specified public address.';
+//     } catch (err){
+//         document.getElementById("modal-text").textContent = 'Request failed. Please try again later.';
+//     }
+//     $('#MyModal').modal('show');
+// }
 
-async function sendOrderToServer(type_, email, amount, quantity, total){
-    console.log('Sending order to server...');
-    const idToken = await getIdToken();
-    return new Promise(function(resolve, reject) {
-        fetch(BASE_URL + GIFTCARD_ROUTE, {
-            method: 'post',
-            headers: {
-                "Content-type": "application/json",
-                "Authorization": "Token " + idToken
-            },
-            body: JSON.stringify({
-                "type_": type_,
-                "email": email,
-                "amount": amount,
-                "quantity": quantity,
-                "total": total
-            })
-        }).then(function (response) {
-            if (response.status !== 201) {
-                console.log('Failed order response. Status Code: ' + response.status);
-                reject(Error("sendOrderToServer"));
-            } else {
-                console.log("Order was sent successfully!")
-                resolve("Success");
-            }
-        }).catch(function (err) {
-            reject(Error("sendOrderToServer"));
-        });
-    })
-}
+// async function sendOrderToServer(type_, email, amount, quantity, total){
+//     console.log('Sending order to server...');
+//     const idToken = await getIdToken();
+//     return new Promise(function(resolve, reject) {
+//         fetch(BASE_URL + GIFTCARD_ROUTE, {
+//             method: 'post',
+//             headers: {
+//                 "Content-type": "application/json",
+//                 "Authorization": "Token " + idToken
+//             },
+//             body: JSON.stringify({
+//                 "type_": type_,
+//                 "email": email,
+//                 "amount": amount,
+//                 "quantity": quantity,
+//                 "total": total
+//             })
+//         }).then(function (response) {
+//             if (response.status !== 201) {
+//                 console.log('Failed order response. Status Code: ' + response.status);
+//                 reject(Error("sendOrderToServer"));
+//             } else {
+//                 console.log("Order was sent successfully!")
+//                 resolve("Success");
+//             }
+//         }).catch(function (err) {
+//             reject(Error("sendOrderToServer"));
+//         });
+//     })
+// }
 
-async function buyGiftcard(){
-    const type_ = "Amazon";
-    const email = document.getElementById("recipient").value;
-    if (email === ''){
-        document.getElementById("modal-text").textContent = 'Please enter an email address.';
-        $('#MyModal').modal('show');
-        return;
-    }
-    const amountStr = document.getElementById("amount").value;
-    const amount = amountStr.replace("$", "");
-    const quantity = document.getElementById("quantity").value;
-    const total = 10000 * amount.valueOf() * quantity.valueOf();
-    const balance = await getBalance();
-    if (total > balance){
-        document.getElementById("modal-text").textContent = 'Sorry, you do not have enough Kin.';
-        $('#MyModal').modal('show');
-        return;
-    }
-    try {
-        await sendOrderToServer(type_, email, amount, quantity, total);
-        document.getElementById("modal-text").textContent = 'Thank you! Your order has been received.';
-    } catch (err){
-        document.getElementById("modal-text").textContent = 'Order failed. Please try again later.';
-    }
-    $('#MyModal').modal('show');
-}
+// async function buyGiftcard(){
+//     const type_ = "Amazon";
+//     const email = document.getElementById("recipient").value;
+//     if (email === ''){
+//         document.getElementById("modal-text").textContent = 'Please enter an email address.';
+//         $('#MyModal').modal('show');
+//         return;
+//     }
+//     const amountStr = document.getElementById("amount").value;
+//     const amount = amountStr.replace("$", "");
+//     const quantity = document.getElementById("quantity").value;
+//     const total = 10000 * amount.valueOf() * quantity.valueOf();
+//     const balance = await getBalance();
+//     if (total > balance){
+//         document.getElementById("modal-text").textContent = 'Sorry, you do not have enough Kin.';
+//         $('#MyModal').modal('show');
+//         return;
+//     }
+//     try {
+//         await sendOrderToServer(type_, email, amount, quantity, total);
+//         document.getElementById("modal-text").textContent = 'Thank you! Your order has been received.';
+//     } catch (err){
+//         document.getElementById("modal-text").textContent = 'Order failed. Please try again later.';
+//     }
+//     $('#MyModal').modal('show');
+// }
 
 
-function calcTotal(){
-    const amountStr = document.getElementById("amount").value;
-    const amount = amountStr.replace("$", "");
-    const quantity = document.getElementById("quantity").value;
-    const total = 10000 * amount.valueOf() * quantity.valueOf();
-    document.getElementById("total").textContent = total.toString() + " Kin";
-}
+// function calcTotal(){
+//     const amountStr = document.getElementById("amount").value;
+//     const amount = amountStr.replace("$", "");
+//     const quantity = document.getElementById("quantity").value;
+//     const total = 10000 * amount.valueOf() * quantity.valueOf();
+//     document.getElementById("total").textContent = total.toString() + " Kin";
+// }
 
 async function fetchStoresFromServer(){
     console.log('Fetching stores from server...');
@@ -162,34 +162,34 @@ async function fetchStoresFromServer(){
     });
 }
 
-async function fetchBalanceFromServer(){
-    console.log('Fetching balance from server...');
-    const idToken = await getIdToken();
-    return new Promise(function(resolve, reject) {
-        fetch(BASE_URL + BALANCE_ROUTE, {
-            method: 'get',
-            headers: {
-                "Content-type": "application/json",
-                "Authorization": "Token " + idToken
-            }
-        }).then(function (response) {
-            if (response.status !== 200) {
-                console.log('Failed response. Status Code: ' + response.status);
-                reject(Error('fetchBalanceFromServer'));
-            } else {
-                response.json().then(function(data) {
-                    console.log("Fetched balance from server successfully!");
-                    const obj = JSON.stringify(data, null, 2);
-                    const json = JSON.parse(obj);
-                    resolve(json.balance);
-                });
-            }
-        }).catch(function (err) {
-            console.log('Fetch Error: ', err);
-            reject(Error('fetchBalanceFromServer'));
-        });
-    });
-}
+// async function fetchBalanceFromServer(){
+//     console.log('Fetching balance from server...');
+//     const idToken = await getIdToken();
+//     return new Promise(function(resolve, reject) {
+//         fetch(BASE_URL + BALANCE_ROUTE, {
+//             method: 'get',
+//             headers: {
+//                 "Content-type": "application/json",
+//                 "Authorization": "Token " + idToken
+//             }
+//         }).then(function (response) {
+//             if (response.status !== 200) {
+//                 console.log('Failed response. Status Code: ' + response.status);
+//                 reject(Error('fetchBalanceFromServer'));
+//             } else {
+//                 response.json().then(function(data) {
+//                     console.log("Fetched balance from server successfully!");
+//                     const obj = JSON.stringify(data, null, 2);
+//                     const json = JSON.parse(obj);
+//                     resolve(json.balance);
+//                 });
+//             }
+//         }).catch(function (err) {
+//             console.log('Fetch Error: ', err);
+//             reject(Error('fetchBalanceFromServer'));
+//         });
+//     });
+// }
 
 async function setStores(){
     try{
@@ -200,26 +200,26 @@ async function setStores(){
     }
 }
 
-async function setBalance(){
-    try{
-        const balance = await fetchBalanceFromServer();
-        chrome.storage.local.set({'balance': balance}, function(){});
-    } catch (err) {
-        console.log("Unable to fetch balance: " + err);
-    }
-}
-
-function getBalance() {
-    return new Promise(function(resolve, reject) {
-        chrome.storage.local.get(['balance'], function(result) {
-            if (typeof result.balance !== 'undefined'){
-                resolve(result.balance);
-            } else {
-                reject(Error('getBalance'));
-            }
-        });
-    });
-}
+// async function setBalance(){
+//     try{
+//         const balance = await fetchBalanceFromServer();
+//         chrome.storage.local.set({'balance': balance}, function(){});
+//     } catch (err) {
+//         console.log("Unable to fetch balance: " + err);
+//     }
+// }
+//
+// function getBalance() {
+//     return new Promise(function(resolve, reject) {
+//         chrome.storage.local.get(['balance'], function(result) {
+//             if (typeof result.balance !== 'undefined'){
+//                 resolve(result.balance);
+//             } else {
+//                 reject(Error('getBalance'));
+//             }
+//         });
+//     });
+// }
 
 // Handle incoming messages. Called when:
 // - a message is received while the app has focus
@@ -351,6 +351,9 @@ function Home() {
             }
         });
     });
+    document.getElementById("storesButton").addEventListener('click', function () {
+        chrome.tabs.create({url: "https://www.earnwithkino.com/stores"});
+    });
 }
 
 function Redeem() {
@@ -364,100 +367,106 @@ function Redeem() {
     //     }
     //     document.getElementById("featured-stores").textContent = names;
     // });
-    document.getElementById("GiftcardButton").addEventListener('click', function () {
-        openTab("GiftcardButton", "Giftcard");
-    }, false);
+    // document.getElementById("GiftcardButton").addEventListener('click', function () {
+    //     openTab("GiftcardButton", "Giftcard");
+    // }, false);
+    document.getElementById("RDownloadBtn").addEventListener('click', function () {
+        chrome.tabs.create({url: ""});
+    });
 }
 
 function Wallet() {
-    chrome.storage.local.get(['balance'], function(result) {
-        if (typeof result.balance !== 'undefined') {
-            document.getElementById("balance").textContent = result.balance + " Kin";
-        }
-    });
-
-    // Add listener to the earned button
-    document.getElementById("earned-btn").addEventListener("click", function(){
-        document.getElementById("spent-btn").className = document.getElementById("spent-btn").className.replace(" active", "");
-        document.getElementById("earned-btn").className += " active";
-    });
-
-    document.getElementById("spent-btn").addEventListener("click", function(){
-        document.getElementById("earned-btn").className = document.getElementById("earned-btn").className.replace(" active", "");
-        document.getElementById("spent-btn").className += " active";
+    // chrome.storage.local.get(['balance'], function(result) {
+    //     if (typeof result.balance !== 'undefined') {
+    //         document.getElementById("balance").textContent = result.balance + " Kin";
+    //     }
+    // });
+    //
+    // // Add listener to the earned button
+    // document.getElementById("earned-btn").addEventListener("click", function(){
+    //     document.getElementById("spent-btn").className = document.getElementById("spent-btn").className.replace(" active", "");
+    //     document.getElementById("earned-btn").className += " active";
+    // });
+    //
+    // document.getElementById("spent-btn").addEventListener("click", function(){
+    //     document.getElementById("earned-btn").className = document.getElementById("earned-btn").className.replace(" active", "");
+    //     document.getElementById("spent-btn").className += " active";
+    // });
+    document.getElementById("WDownloadBtn").addEventListener('click', function () {
+        chrome.tabs.create({url: ""});
     });
 }
 
-function Giftcard(){
+// function Giftcard(){
+//
+//     // Add listener to the confirm button
+//     document.getElementById("Confirm").addEventListener("click", buyGiftcard);
+//
+//     // Add listener to the option changes
+//     document.getElementById("amount").addEventListener("change", calcTotal);
+//
+//     // Add listener to the option changes
+//     document.getElementById("quantity").addEventListener("change", calcTotal);
+//
+//     // Hide the nav bar
+//     let tab = document.getElementsByClassName("bottomnavbar");
+//     tab[0].style.visibility = 'hidden';
+//
+//     // Hide the profile button
+//     document.getElementById("settings-right").style.visibility = "hidden";
+//
+//     // Make back button visible and add listener
+//     document.getElementById("settings-left").style.visibility = "visible";
+//
+//     document.getElementById("settings-left").addEventListener('click', function () {
+//         // Send back to redeem page
+//         openTab("RedeemButton", "Redeem");
+//         // Hide the back button
+//         document.getElementById("settings-left").style.visibility = "hidden";
+//         // Show the navigation bar again
+//         tab[0].style.visibility = 'visible';
+//         // Show the profile button
+//         document.getElementById("settings-right").style.visibility = "visible";
+//         // Show the title text
+//         document.getElementById("title").style.visibility = "visible";
+//     }, false);
+//
+//     // Hide the title text
+//     document.getElementById("title").style.visibility = "hidden";
+// }
 
-    // Add listener to the confirm button
-    document.getElementById("Confirm").addEventListener("click", buyGiftcard);
-
-    // Add listener to the option changes
-    document.getElementById("amount").addEventListener("change", calcTotal);
-
-    // Add listener to the option changes
-    document.getElementById("quantity").addEventListener("change", calcTotal);
-
-    // Hide the nav bar
-    let tab = document.getElementsByClassName("bottomnavbar");
-    tab[0].style.visibility = 'hidden';
-
-    // Hide the profile button
-    document.getElementById("settings-right").style.visibility = "hidden";
-
-    // Make back button visible and add listener
-    document.getElementById("settings-left").style.visibility = "visible";
-
-    document.getElementById("settings-left").addEventListener('click', function () {
-        // Send back to redeem page
-        openTab("RedeemButton", "Redeem");
-        // Hide the back button
-        document.getElementById("settings-left").style.visibility = "hidden";
-        // Show the navigation bar again
-        tab[0].style.visibility = 'visible';
-        // Show the profile button
-        document.getElementById("settings-right").style.visibility = "visible";
-        // Show the title text
-        document.getElementById("title").style.visibility = "visible";
-    }, false);
-
-    // Hide the title text
-    document.getElementById("title").style.visibility = "hidden";
-}
-
-function Withdraw() {
-
-    // Add listener to the confirm button
-    document.getElementById("Confirm1").addEventListener("click", withdrawKin, false);
-
-    // Hide the nav bar
-    let tab = document.getElementsByClassName("bottomnavbar");
-    tab[0].style.visibility = 'hidden';
-
-    // Hide the profile button
-    document.getElementById("settings-right").style.visibility = "hidden";
-
-    // Make back button visible and add listener
-    document.getElementById("settings-left").style.visibility = "visible";
-
-    document.getElementById("settings-left").addEventListener('click', function () {
-        // Hide the back button
-        document.getElementById("settings-left").style.visibility = "hidden";
-        // Show the navigation bar again
-        tab[0].style.visibility = 'visible';
-        // Show the profile button
-        document.getElementById("settings-right").style.visibility = "visible";
-        // Show the title text
-        document.getElementById("title").style.visibility = "visible";
-        // Send back to settings page
-        openTab("settings-right", "Settings");
-    }, false);
-
-    // Hide the title text
-    document.getElementById("title").style.visibility = "hidden";
-
-}
+// function Withdraw() {
+//
+//     // Add listener to the confirm button
+//     document.getElementById("Confirm1").addEventListener("click", withdrawKin, false);
+//
+//     // Hide the nav bar
+//     let tab = document.getElementsByClassName("bottomnavbar");
+//     tab[0].style.visibility = 'hidden';
+//
+//     // Hide the profile button
+//     document.getElementById("settings-right").style.visibility = "hidden";
+//
+//     // Make back button visible and add listener
+//     document.getElementById("settings-left").style.visibility = "visible";
+//
+//     document.getElementById("settings-left").addEventListener('click', function () {
+//         // Hide the back button
+//         document.getElementById("settings-left").style.visibility = "hidden";
+//         // Show the navigation bar again
+//         tab[0].style.visibility = 'visible';
+//         // Show the profile button
+//         document.getElementById("settings-right").style.visibility = "visible";
+//         // Show the title text
+//         document.getElementById("title").style.visibility = "visible";
+//         // Send back to settings page
+//         openTab("settings-right", "Settings");
+//     }, false);
+//
+//     // Hide the title text
+//     document.getElementById("title").style.visibility = "hidden";
+//
+// }
 
 function Settings() {
 
@@ -485,16 +494,16 @@ function Settings() {
     }, false);
 
     // Add listener to the withdraw button
-    document.getElementById("withdrawButton").addEventListener('click', function () {
-        // Hide the back button
-        document.getElementById("settings-left").style.visibility = "hidden";
-        // Show the navigation bar again
-        tab[0].style.visibility = 'visible';
-        // Show the profile button
-        document.getElementById("settings-right").style.visibility = "visible";
-        // Send to withdraw page
-        openTab("withdrawButton", "Withdraw");
-    }, false);
+    // document.getElementById("withdrawButton").addEventListener('click', function () {
+    //     // Hide the back button
+    //     document.getElementById("settings-left").style.visibility = "hidden";
+    //     // Show the navigation bar again
+    //     tab[0].style.visibility = 'visible';
+    //     // Show the profile button
+    //     document.getElementById("settings-right").style.visibility = "visible";
+    //     // Send to withdraw page
+    //     openTab("withdrawButton", "Withdraw");
+    // }, false);
 
     // Add listener for the logout button
     document.getElementById("LogoutButton").addEventListener('click', function () {
@@ -526,10 +535,10 @@ function openTab(buttonId, tabId) {
         Home();
     } else if (tabId === 'Settings') {
         Settings();
-    } else if (tabId === 'Giftcard'){
-        Giftcard();
-    } else if (tabId === 'Withdraw'){
-        Withdraw();
+    // } else if (tabId === 'Giftcard'){
+    //     Giftcard();
+    // } else if (tabId === 'Withdraw'){
+    //     Withdraw();
     }
 
     // Get all elements with class="tabcontent" and hide them
@@ -576,7 +585,7 @@ async function signInTasks(email, password) {
         $('#MyModal').modal('show');
         return;
     }
-    setBalance();
+    // setBalance();
     setStores();
     setFCMToken();
 }
@@ -709,7 +718,7 @@ async function signUpTasks(email, password) {
         $('#MyModal').modal('show');
         return;
     }
-    setBalance();
+    // setBalance();
     setStores();
     setFCMToken();
 }

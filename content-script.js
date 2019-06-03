@@ -170,11 +170,11 @@ function showActivateNotification(host) {
 
     let logo = document.createElement("logo");
     logo.style.position = "absolute";
-    logo.style.top = "15px";
+    logo.style.top = "20px";
     logo.style.right = "180px";
     logo.style.width = "100px";
-    logo.style.height = "50px";
-    logo.style.backgroundSize = "100px 50px";
+    logo.style.height = "39px";
+    logo.style.backgroundSize = "100px 39px";
     let logoUrl = chrome.extension.getURL("images/logo.png");
     logo.style.backgroundImage = "url(" + logoUrl + ")";
 

@@ -88,6 +88,10 @@ SIGN UP PAGE
     border-top-right-radius: 0;
 }
 
+.icon-img {
+    color: darkgrey;
+}
+
 #status-img {
     color: darkgrey;
 }
@@ -127,63 +131,63 @@ WALLET PAGE
     padding-top: 50px;
 }
 
-/*
-WITHDRAW PAGE
-*/
-#Withdraw{
-    text-align: left;
-}
+/*!**/
+/*WITHDRAW PAGE*/
+/**!*/
+/*#Withdraw{*/
+/*    text-align: left;*/
+/*}*/
 
-/*
-REDEEM PAGE
-*/
-#Redeem {
-    text-align: left;
-}
-.text-muted {
-    display: block;
-    line-height: 1.5 !important;
-}
-.giftcard-img {
-    width: 100%;
-    height: 100%;
-    transition: transform 225ms ease-in-out;
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-drag: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    outline: none !important;
-    box-shadow: none;
-}
+/*!**/
+/*REDEEM PAGE*/
+/**!*/
+/*#Redeem {*/
+/*    text-align: left;*/
+/*}*/
+/*.text-muted {*/
+/*    display: block;*/
+/*    line-height: 1.5 !important;*/
+/*}*/
+/*.giftcard-img {*/
+/*    width: 100%;*/
+/*    height: 100%;*/
+/*    transition: transform 225ms ease-in-out;*/
+/*    user-select: none;*/
+/*    -moz-user-select: none;*/
+/*    -webkit-user-drag: none;*/
+/*    -webkit-user-select: none;*/
+/*    -ms-user-select: none;*/
+/*    outline: none !important;*/
+/*    box-shadow: none;*/
+/*}*/
 
-/*
-GIFTCARD PAGE
-*/
-.row {
-    align-items: center;
-}
-.total-row{
-    align-items: center;
-    outline: 1px solid black;
-}
-.col-right{
-    outline: 1px solid black;
-}
-#Giftcard {
-    text-align: left;
-}
-.giftcard-img-small {
-    width: 100%;
-    height: 100%;
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-drag: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    outline: none !important;
-    box-shadow: none;
-}
+/*!**/
+/*GIFTCARD PAGE*/
+/**!*/
+/*.row {*/
+/*    align-items: center;*/
+/*}*/
+/*.total-row{*/
+/*    align-items: center;*/
+/*    outline: 1px solid black;*/
+/*}*/
+/*.col-right{*/
+/*    outline: 1px solid black;*/
+/*}*/
+/*#Giftcard {*/
+/*    text-align: left;*/
+/*}*/
+/*.giftcard-img-small {*/
+/*    width: 100%;*/
+/*    height: 100%;*/
+/*    user-select: none;*/
+/*    -moz-user-select: none;*/
+/*    -webkit-user-drag: none;*/
+/*    -webkit-user-select: none;*/
+/*    -ms-user-select: none;*/
+/*    outline: none !important;*/
+/*    box-shadow: none;*/
+/*}*/
 
 
 

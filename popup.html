@@ -10,10 +10,13 @@
     <!-- ***************************************************************************************
          * TODO(DEVELOPER): Make sure you are importing the latest version of the Firebase JS. *
          *************************************************************************************** -->
-    <script src="https://www.gstatic.com/firebasejs/5.8.5/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.8.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.8.5/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.8.5/firebase-messaging.js"></script>
     <script src="popup.js"></script>
 </head>
 <body>
+
 
 <div id="loginPage">
     <form class="form-signin">
@@ -67,28 +70,31 @@
 
     <!-- Tab content -->
     <div id="Home" class="tabcontent">
-        <i id="status-img" class="fas fa-map-marked-alt p-2 pt-4 fa-2x"></i>
+        <i id="status-img" class="fas fa-map-marked-alt p-2 pt-4 fa-2x icon-img"></i>
         <p id="offer">You are not at a participating store.</p>
-        <button class="btn btn-sm btn-outline-dark seeStoresButton" type="button">See Stores</button>
+        <button id="storesButton" class="btn btn-sm btn-outline-dark seeStoresButton" type="button">See Stores</button>
     </div>
 
     <div id="Redeem" class="tabcontent">
-<!--        <i class="fas fa-angle-left"></i>-->
-        <small class="text-muted mb-3">Currently, you can only redeem Kin for an Amazon giftcard. We are working hard to add more options, stay tuned.</small>
-        <input id="GiftcardButton" type="image" class="giftcard-img" src="images/giftcard.png" alt="Amazon Giftcard">
-<!--        <p>To redeem your Kin for free giftcards, please download our android app.</p>-->
-<!--        <button class="btn btn-sm btn-outline-dark downloadButton" type="button">Download</button>-->
+        <i class="fas fas fa-gifts p-2 pt-4 fa-2x icon-img"></i>
+<!--        <small class="text-muted mb-3">Currently, you can only redeem Kin for an Amazon giftcard. We are working hard to add more options, stay tuned.</small>-->
+<!--        <input id="GiftcardButton" type="image" class="giftcard-img" src="images/giftcard.png" alt="Amazon Giftcard">-->
+        <p>To redeem your Kin for free giftcards, please download our android app.</p>
+        <button id="RDownloadBtn" class="btn btn-sm btn-outline-dark downloadButton" type="button">Download</button>
     </div>
 
     <div id="Wallet" class="tabcontent">
-        <button class="btn btn-sm btn-outline-dark mb-2" id="balance">0 Kin</button>
-        <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-            <button type="button" id="earned-btn" class="btn btn-secondary active">Earned</button>
-            <button type="button" id="spent-btn" class="btn btn-secondary">Spent</button>
-        </div>
-        <div class="transactions">
-            <p class="text-muted small">You have no transactions available. Shop at participating stores to get started.</p>
-        </div>
+        <i class="fas fas fa-file-alt p-2 pt-4 fa-2x icon-img"></i>
+        <p>To see your transaction history and Kin balance, please download our android app.</p>
+        <button id="WDownloadBtn" class="btn btn-sm btn-outline-dark downloadButton" type="button">Download</button>
+<!--        <button class="btn btn-sm btn-outline-dark mb-2" id="balance">0 Kin</button>-->
+<!--        <div class="btn-group btn-group-sm" role="group" aria-label="Bas]\ic example">-->
+<!--            <button type="button" id="earned-btn" class="btn btn-secondary active">Earned</button>-->
+<!--            <button type="button" id="spent-btn" class="btn btn-secondary">Spent</button>-->
+<!--        </div>-->
+<!--        <div class="transactions">-->
+<!--            <p class="text-muted small">You have no transactions available. Shop at participating stores to get started.</p>-->
+<!--        </div>-->
     </div>
 
     <div id="Settings" class="tabcontent">
@@ -98,19 +104,15 @@
         </div>
         <div class="d-flex justify-content-between">
             <span >Stores</span>
-            <a href="#"><i class="fas fa-angle-right"></i></a>
+            <a href="https://www.earnwithkino.com/stores" target="_blank"><i class="fas fa-angle-right"></i></a>
         </div>
-        <div class="d-flex justify-content-between">
-            <span >Withdraw Kin</span>
-            <a href="#"><i id="withdrawButton" class="fas fa-angle-right"></i></a>
-        </div>
+<!--        <div class="d-flex justify-content-between">-->
+<!--            <span >Withdraw Kin</span>-->
+<!--            <a href="#"><i id="withdrawButton" class="fas fa-angle-right"></i></a>-->
+<!--        </div>-->
         <div class="d-flex justify-content-between">
             <span>FAQ</span>
-            <a href="#"><i class="fas fa-angle-right"></i></a>
-        </div>
-        <div class="d-flex justify-content-between">
-            <span>Rate Us</span>
-            <a href="#"><i class="fas fa-angle-right"></i></a>
+            <a href="https://www.earnwithkino.com/faq" target="_blank"><i class="fas fa-angle-right"></i></a>
         </div>
         <p></p>
         <button class="btn btn-md btn-dark btn-block" type="button" id="LogoutButton">Logout</button>
@@ -128,54 +130,54 @@
 <!--        </form>-->
 <!--    </div>-->
 
-        <div id="Giftcard" class="tabcontent">
-            <p class="mb-0 mt-0 font-weight-bold">Amazon Giftcard</p>
-            <small class="text-muted">Note: The recipient will receive the e-giftcard via email within 48 hours.</small>
-            <form>
-                <div class="form-group row mb-0">
-                    <label for="recipient" class="col-4 col-form-label">Recipient: </label>
-                    <div class="col-8">
-                        <input id="recipient" type="email" class="form-control form-control-sm" placeholder="Email address" required>
-                    </div>
-                </div>
-                <div class="form-group row mb-0">
-                    <label for="amount" class="col-4 col-form-label">Amount: </label>
-                    <div class="col-8">
-                    <select class="form-control-sm text-center w-100" id="amount">
-                        <option>$5</option>
-                        <option>$10</option>
-                        <option>$25</option>
-                    </select>
-                    </div>
-                </div>
-                <div class="form-group row text-center mb-0">
-                    <label for="quantity" class="col-4 col-form-label">Quantity: </label>
-                    <div class="col-8">
-                        <select class="form-control-sm  w-100" id="quantity">
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="d-flex flex-row justify-content-between mt-1">
-                    <label class="">Total </label>
-                    <p id="total" class="">10000 Kin</p>
-                </div>
-<!--                <div class="form-group">-->
-<!--                    <label for="exampleFormControlTextarea1">Message <span class="text-muted">(Optional)</span> </label>-->
-<!--                    <textarea class="form-control form-control-sm" id="exampleFormControlTextarea1" rows="3"></textarea>-->
+<!--        <div id="Giftcard" class="tabcontent">-->
+<!--            <p class="mb-0 mt-0 font-weight-bold">Amazon Giftcard</p>-->
+<!--            <small class="text-muted">Note: The recipient will receive the e-giftcard via email within 48 hours.</small>-->
+<!--            <form>-->
+<!--                <div class="form-group row mb-0">-->
+<!--                    <label for="recipient" class="col-4 col-form-label">Recipient: </label>-->
+<!--                    <div class="col-8">-->
+<!--                        <input id="recipient" type="email" class="form-control form-control-sm" placeholder="Email address" required>-->
+<!--                    </div>-->
 <!--                </div>-->
-    <!--            <small id="emailHelp" class="form-text mb-2">Request an email reset link</small>-->
-<!--                <label for="email2" class="sr-only">Email address: </label>-->
-<!--                <input id="email2" type="email" class="form-control form-control-sm mb-2" placeholder="Email address" required autofocus>-->
-                <button class="btn btn-md btn-dark btn-block" type="button" id="Confirm">Confirm</button>
-    <!--            <div class="alert alert-success pt-2 pb-2 pl-2 pr-2 mt-2 mb-2 small" id="ResetPasswordSuccessAlert"></div>-->
-    <!--            <div class="alert alert-danger pt-2 pb-2 pl-2 pr-2 mt-2 mb-2 small" id="ResetPasswordFailedAlert"></div>-->
-            </form>
-        </div>
+<!--                <div class="form-group row mb-0">-->
+<!--                    <label for="amount" class="col-4 col-form-label">Amount: </label>-->
+<!--                    <div class="col-8">-->
+<!--                    <select class="form-control-sm text-center w-100" id="amount">-->
+<!--                        <option>$5</option>-->
+<!--                        <option>$10</option>-->
+<!--                        <option>$25</option>-->
+<!--                    </select>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="form-group row text-center mb-0">-->
+<!--                    <label for="quantity" class="col-4 col-form-label">Quantity: </label>-->
+<!--                    <div class="col-8">-->
+<!--                        <select class="form-control-sm  w-100" id="quantity">-->
+<!--                            <option>1</option>-->
+<!--                            <option>2</option>-->
+<!--                            <option>3</option>-->
+<!--                            <option>4</option>-->
+<!--                            <option>5</option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="d-flex flex-row justify-content-between mt-1">-->
+<!--                    <label class="">Total </label>-->
+<!--                    <p id="total" class="">10000 Kin</p>-->
+<!--                </div>-->
+<!--&lt;!&ndash;                <div class="form-group">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <label for="exampleFormControlTextarea1">Message <span class="text-muted">(Optional)</span> </label>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <textarea class="form-control form-control-sm" id="exampleFormControlTextarea1" rows="3"></textarea>&ndash;&gt;-->
+<!--&lt;!&ndash;                </div>&ndash;&gt;-->
+<!--    &lt;!&ndash;            <small id="emailHelp" class="form-text mb-2">Request an email reset link</small>&ndash;&gt;-->
+<!--&lt;!&ndash;                <label for="email2" class="sr-only">Email address: </label>&ndash;&gt;-->
+<!--&lt;!&ndash;                <input id="email2" type="email" class="form-control form-control-sm mb-2" placeholder="Email address" required autofocus>&ndash;&gt;-->
+<!--                <button class="btn btn-md btn-dark btn-block" type="button" id="Confirm">Confirm</button>-->
+<!--    &lt;!&ndash;            <div class="alert alert-success pt-2 pb-2 pl-2 pr-2 mt-2 mb-2 small" id="ResetPasswordSuccessAlert"></div>&ndash;&gt;-->
+<!--    &lt;!&ndash;            <div class="alert alert-danger pt-2 pb-2 pl-2 pr-2 mt-2 mb-2 small" id="ResetPasswordFailedAlert"></div>&ndash;&gt;-->
+<!--            </form>-->
+<!--        </div>-->
 
     <div id="Withdraw" class="tabcontent">
         <form class="form-group">
