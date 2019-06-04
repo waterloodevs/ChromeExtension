@@ -26,7 +26,6 @@ default_app = firebase_admin.initialize_app(cred)
 
 DATABASE_URL = 'postgresql://postgres:postgres@localhost:5432/postgres'
 
-
 app = Quart(__name__)
 run_with_ngrok(app)
 db = SQLAlchemy(app)
@@ -246,6 +245,7 @@ def valid_order(order):
 @app.route('/buy_giftcard', methods=['POST'])
 @http_auth.login_required
 async def buy_giftcard():
+    user = None
     client = kin.KinClient(kin.TEST_ENVIRONMENT)
     try:
         user = User.query.filter_by(uid=g.uid).first()
