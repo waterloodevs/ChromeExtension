@@ -79,10 +79,6 @@ class User(db.Model):
         self.android_fcm_token = android_fcm_token
         self.public_address = public_address
 
-    def __repr__(self):
-        return "email: {}, balance: {}"\
-            .format(self.email, self.balance)
-
 
 # Using this to verify authenticated calls where login is required
 @http_auth.verify_token
@@ -111,33 +107,7 @@ def register():
         db.session.commit()
     except AssertionError as err:
         db.session.rollback()
-        return jsonify(), 500
-    # # Create a wallet and update public address
-    # client = kin.KinClient(kin.TEST_ENVIRONMENT)
-    # loop = asyncio.new_event_loop()
-    # try:
-    #     parent_account = client.kin_account(KINO_PRIVATE_ADDRESS, app_id=APP_ID)
-    #     keypair = kin.Keypair()
-    #     minimum_fee = loop.run_until_complete(client.get_minimum_fee())
-    #     tx_hash = loop.run_until_complete(parent_account.create_account(keypair.public_address, starting_balance=20000,
-    #                                                                     fee=minimum_fee, memo_text='Account creation'))
-    #     exist = loop.run_until_complete(client.does_account_exists(keypair.public_address))
-    #     if exist:
-    #         user.public_address = keypair.public_address
-    #         user.private_address = keypair.secret_seed
-    #     else:
-    #         raise Exception
-    #     error = ""
-    # except Exception as e:
-    #     try:
-    #         error = str(e)
-    #     except:
-    #         error = "Account creation failed"
-    #     return jsonify(), 500
-    # finally:
-    #     client.close()
-    #     loop.close()
-    #     email_kino(user, account_creation="", error=error)
+
     return jsonify(), 201
 
 
@@ -199,13 +169,6 @@ async def onboard_account():
     return jsonify(), 201
 
 
-# @app.route('/balance', methods=['GET'])
-# @http_auth.login_required
-# def balance():
-#     user = User.query.filter_by(uid=g.uid).first()
-#     return jsonify({"balance": user.balance}), 200
-
-
 @app.route('/stores', methods=['GET'])
 @http_auth.login_required
 def stores():
@@ -222,99 +185,9 @@ def affiliate_link(url):
     return jsonify({"url": link}), 200
 
 
-# def fetch_access_token():
-#     request_token = "OGZiY0JCR0o3Zmh1RGg3MFh0OTQyeVRZU0JRYTp1VHhvREZfZGNxMTBnZENGX0NmenJNNlB0REVh"
-#     response = requests.post(
-#         "https://api.rakutenmarketing.com/token",
-#         headers={"Authorization": "Basic " + request_token},
-#         data={
-#             "grant_type": "password",
-#             "username": "jeevansidhu",
-#             "password": "ballislife99",
-#             "scope": "3612359"
-#         }
-#     )
-#     access_token = response.json()['access_token']
-#     return access_token
-#
-#
-# def fetch_transactions(access_token):
-#     start_date = datetime.utcnow()
-#     start_date -= timedelta(days=30)
-#     start_date = start_date.strftime("%Y-%m-%d %H:%M:%S")
-#     response = requests.get(
-#         "https://api.rakutenmarketing.com/events/1.0/transactions",
-#         headers={
-#             "Accept": "text/json",
-#             "Authorization": "Bearer " + access_token
-#         },
-#         params={"transaction_date_start=": start_date}
-#     )
-#     transactions = response.json()
-#     return transactions
-#
-#
-# def process_transaction(user, transaction):
-#     sale_amount = transaction["sale_amount"]
-#     kin_amount = calc_kin_payout_amount(sale_amount)
-#     # Update user's balance in db
-#     user.balance += kin_amount
-#     # Update user's transactions in db
-#     if user.transactions:
-#         temp = user.transactions
-#         temp = temp.copy()
-#         temp.update({transaction["etransaction_id"]: transaction})
-#         user.transactions = temp
-#     else:
-#         user.transactions = {transaction["etransaction_id"]: transaction}
-#     try:
-#         db.session.commit()
-#     except AssertionError as err:
-#         db.session.rollback()
-#     pay(user, kin_amount)
-#     notify_extension(user, kin_amount, transaction['product_name'])
-
-
 def calc_kin_payout_amount(dollar_amount):
     amount = dollar_amount * EARN_PRICE_PER_DOLLAR
     return min(amount, 50000)
-
-
-# def pay(user, kin_amount):
-#     #TODO
-#     return
-
-
-# def notify_extension(user, kin_amount, product_name):
-#     message = messaging.Message(
-#         data={
-#             'title': "Kino",
-#             'body': "You just earned {} Kin for your purchase of {}.".format(kin_amount, product_name)
-#         },
-#         token=user.web_fcm_token,
-#     )
-#     try:
-#         response = messaging.send(message)
-#     except Exception as err:
-#         raise err
-#     return
-
-
-# def notify_app(user, kin_amount, product_name):
-#     # See documentation on defining a message payload.
-#     message = messaging.Message(
-#         data={
-#             'title': "Kino",
-#             'body': "You just earned {} Kin for your purchase of {}.".format(kin_amount, product_name)
-#         },
-#         token=user.android_fcm_token,
-#     )
-#     # Send a message to the device corresponding to the provided registration token.
-#     try:
-#         response = messaging.send(message)
-#     except Exception as err:
-#         raise err
-#     return
 
 
 def email_kino(user, account_creation="", earn_transaction="",
@@ -342,24 +215,6 @@ def email_kino(user, account_creation="", earn_transaction="",
     s.login("pythoncustomerservice@gmail.com", "vdfv487g489b4")
     s.send_message(msg)
     s.quit()
-
-
-# def monthly_job():
-#     access_token = fetch_access_token()
-#     transactions = fetch_transactions(access_token)
-#     for transaction in transactions:
-#         try:
-#             u1 = transaction["u1"]
-#             user = User.query.filter_by(uid=u1).first()
-#             process_transaction(user, transaction)
-#             error = ""
-#         except Exception as e:
-#             try:
-#                 error = str(e)
-#             except:
-#                 error = "Earn transaction failed"
-#         finally:
-#             email_kino(user, earn_transaction=transaction, error=error)
 
 
 def valid_order(order):
@@ -417,26 +272,6 @@ async def buy_giftcard():
         user.balance -= total
         error = ""
         return jsonify({'tx': whitelisted_tx}), 201
-    #     # Whitelist the spend transaction and use the user's secret key to send yourself Kin
-    #     child_account = client.kin_account(user.private_address, app_id=APP_ID)
-    #     minimum_fee = loop.run_until_complete(client.get_minimum_fee())
-    #     builder = child_account.build_send_kin(KINO_PUBLIC_ADDRESS, total, fee=minimum_fee,
-    #                                            memo_text='Amazon giftcard order')
-    #     envelope = builder.gen_xdr().decode()
-    #     network_id = builder.network_name
-    #     client_transaction = {
-    #         "envelope": envelope,
-    #         "network_id": network_id
-    #     }
-    #     parent_account = client.kin_account(KINO_PRIVATE_ADDRESS, app_id=APP_ID)
-    #     whitelisted_tx = parent_account.whitelist_transaction(client_transaction)
-    #     builder = parent_account.get_transaction_builder(minimum_fee)
-    #     # xdr = TransactionEnvelope.from_xdr(whitelisted_tx)
-    #     builder.import_from_xdr(whitelisted_tx)
-    #     tx_hash = loop.run_until_complete(child_account.submit_transaction(builder))
-    #     user.balance -= total
-    #     # TODO: add to transaction or no?
-    #     error = ""
     except Exception as e:
         try:
             error = str(e)
@@ -447,31 +282,6 @@ async def buy_giftcard():
         await client.close()
         if user:
             email_kino(user, spend_transaction=request.json, error=error)
-
-
-# @app.route('/withdraw', methods=['POST'])
-# @http_auth.login_required
-# def withdraw():
-#     try:
-#         user = User.query.filter_by(u
-#         id=g.uid).first()
-#         data = request.json
-#         # Get gift-card type, amount, email, and quantity
-#         public_address = data['public_address']
-#         # Whitelist the transaction and send user's balance to the public address
-#         # TODO:
-#         # Subtract from balance
-#         # Add to transactions
-#         error = ""
-#     except Exception as e:
-#         try:
-#             error = str(e)
-#         except:
-#             error = "Earn transaction failed"
-#         return jsonify(), 500
-#     finally:
-#         email_kino(user, withdraw_transaction=request.json, error=error)
-#     return jsonify(), 201
 
 
 if __name__ == '__main__':
