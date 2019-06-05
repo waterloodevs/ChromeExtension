@@ -4,7 +4,6 @@ import json
 import psycopg2
 import psycopg2.extras
 import asyncio
-from quart import Quart
 import kin
 from kin_base.transaction_envelope import TransactionEnvelope
 import smtplib
@@ -19,6 +18,7 @@ from firebase_admin import credentials, auth, messaging
 from flask_httpauth import HTTPTokenAuth
 from flask_ngrok import run_with_ngrok
 
+
 http_auth = HTTPTokenAuth(scheme='Token')
 
 cred = credentials.Certificate('kino-extension-firebase-adminsdk-mrn7d-cca5ca5e4c.json')
@@ -26,8 +26,8 @@ default_app = firebase_admin.initialize_app(cred)
 
 DATABASE_URL = 'postgresql://postgres:postgres@localhost:5432/postgres'
 
-app = Quart(__name__)
-run_with_ngrok(app)
+app = Flask(__name__)
+# run_with_ngrok(app)
 db = SQLAlchemy(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -130,9 +130,7 @@ def update_fcm_token():
     return jsonify(), 201
 
 
-@app.route('/onboard_account', methods=['POST'])
-@http_auth.login_required
-async def onboard_account():
+async def onboard_account_async(request):
     if 'public_address' not in request.json:
         return jsonify(), 500
     public_address = request.json['public_address']
@@ -166,6 +164,15 @@ async def onboard_account():
         finally:
             await client.close()
     return jsonify(), 201
+
+
+@app.route('/onboard_account', methods=['POST'])
+@http_auth.login_required
+def onboard_account():
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    response = loop.run_until_complete(onboard_account_async(request))
+    return response
 
 
 @app.route('/stores', methods=['GET'])
@@ -242,9 +249,7 @@ def valid_order(order):
     return True
 
 
-@app.route('/buy_giftcard', methods=['POST'])
-@http_auth.login_required
-async def buy_giftcard():
+async def buy_giftcard_async(request):
     user = None
     client = kin.KinClient(kin.TEST_ENVIRONMENT)
     try:
@@ -260,6 +265,7 @@ async def buy_giftcard():
         quanity = int(order['quantity'])
         total = float(order['total'])
         envelope = order['envelope']
+
         network_id = order['network_id']
         data = kin.decode_transaction(envelope, network_id)
         if data.operation.destination != KINO_PUBLIC_ADDRESS:
@@ -282,6 +288,15 @@ async def buy_giftcard():
         await client.close()
         if user:
             email_kino(user, spend_transaction=request.json, error=error)
+
+
+@app.route('/buy_giftcard', methods=['POST'])
+@http_auth.login_required
+def buy_giftcard():
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    response = loop.run_until_complete(buy_giftcard_async(request))
+    return response
 
 
 if __name__ == '__main__':

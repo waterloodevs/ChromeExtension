@@ -13,10 +13,22 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/api/app.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4437">
-              <caret line="261" column="36" lean-forward="true" selection-start-line="261" selection-start-column="36" selection-end-line="261" selection-end-column="36" />
+            <state relative-caret-position="340">
+              <caret line="20" lean-forward="true" selection-start-line="20" selection-end-line="20" />
               <folding>
                 <element signature="e#0#24#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../Kino_landing_page/KIN_heroku/index.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-167">
+              <caret line="29" column="21" selection-start-line="29" selection-start-column="21" selection-end-line="29" selection-end-column="21" />
+              <folding>
+                <element signature="e#0#59#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -33,8 +45,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>displa</find>
-      <find>display</find>
       <find>alert</find>
       <find>:</find>
       <find>!important</find>
@@ -63,6 +73,8 @@
       <find>Te(</find>
       <find>get_event</find>
       <find>fee</find>
+      <find>psy</find>
+      <find>await</find>
     </findStrings>
     <replaceStrings>
       <replace>Stores</replace>
@@ -143,7 +155,7 @@
     <property name="JavaScriptWeakerCompletionTypeGuess" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Kino_landing_page" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/api/app.py" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunDashboard">
@@ -167,12 +179,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="C:\Users\Jeevan\AppData\Local\Programs\Python\Python37-32\python.exe" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/browser_extension_api" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/api" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/browser_extension_api/app.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/api/app.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -225,6 +237,11 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Python.app" />
+      <item itemvalue="Python.delete" />
+      <item itemvalue="Python.test" />
+    </list>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -271,12 +288,12 @@
       <workItem from="1559534318203" duration="3917000" />
       <workItem from="1559587818704" duration="2871000" />
       <workItem from="1559623073211" duration="207000" />
-      <workItem from="1559670562774" duration="1410000" />
+      <workItem from="1559670562774" duration="5815000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="247390000" />
+    <option name="totallyTimeSpent" value="251795000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -291,10 +308,10 @@
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.42647058" visible="true" weight="0.30484116" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.42647058" visible="true" weight="0.30484116" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Run" order="0" weight="0.45751634" />
+      <window_info anchor="bottom" id="Run" order="0" weight="0.41339868" />
       <window_info anchor="bottom" id="Version Control" order="1" weight="0.32843137" />
       <window_info anchor="bottom" id="Python Console" order="2" weight="0.32843137" />
       <window_info anchor="bottom" id="Terminal" order="3" weight="0.32843137" />
@@ -321,21 +338,10 @@
     <option featureType="com.intellij.fileTypeFactory" implementationName="*.js" />
     <option featureType="com.intellij.fileTypeFactory" implementationName="*.css" />
   </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/ChromeExtension$app.coverage" NAME="app Coverage Results" MODIFIED="1559712017010" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/api" />
+  </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37-32/Lib/selectors.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="121">
-          <caret line="314" selection-start-line="314" selection-end-line="314" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37-32/Lib/site-packages/sqlalchemy/orm/query.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5040">
-          <caret line="1764" column="8" selection-start-line="1764" selection-start-column="8" selection-end-line="1764" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/todo.txt">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -588,13 +594,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37-32/Lib/site-packages/kin/client.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="65" column="21" selection-start-line="65" selection-start-column="21" selection-end-line="65" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37-32/Lib/site-packages/flask_httpauth.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="100">
@@ -661,10 +660,37 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37-32/Lib/site-packages/psycopg2/__init__.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../Kino_landing_page/KIN_heroku/index.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-167">
+          <caret line="29" column="21" selection-start-line="29" selection-start-column="21" selection-end-line="29" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#59#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37-32/Lib/site-packages/kin/client.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="98" column="14" selection-start-line="98" selection-start-column="14" selection-end-line="98" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37-32/Lib/site-packages/flask/globals.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="233">
+          <caret line="58" selection-start-line="58" selection-end-line="58" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/api/app.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4437">
-          <caret line="261" column="36" lean-forward="true" selection-start-line="261" selection-start-column="36" selection-end-line="261" selection-end-column="36" />
+        <state relative-caret-position="340">
+          <caret line="20" lean-forward="true" selection-start-line="20" selection-end-line="20" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
           </folding>
