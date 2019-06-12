@@ -14,7 +14,7 @@ firebase.initializeApp(config);
 // messages.
 const messaging = firebase.messaging();
 
-const BASE_URL = 'http://abe74c55.ngrok.io';
+const BASE_URL = 'https://warm-falls-22958.herokuapp.com';
 const FCM_TOKEN_ROUTE = '/update_fcm_token';
 const STORES_ROUTE = '/stores';
 const AFFILIATE_LINK_ROUTE = '/affiliate_link/';

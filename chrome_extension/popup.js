@@ -15,7 +15,7 @@ const messaging = firebase.messaging();
 // Add the public key generated from the console here.
 messaging.usePublicVapidKey('BJRkoCi2Qzx5jYe_qxL1hD2OkWAibd9xxxrRHz6Sn2IhUR2r1wNXK_YIBwy9GsQ58tPwpuI4wQVQhxZIvgRaXuU');
 
-const BASE_URL = 'http://abe74c55.ngrok.io';
+const BASE_URL = 'https://warm-falls-22958.herokuapp.com';
 const REGISTER_ROUTE = '/register';
 const FCM_TOKEN_ROUTE = '/update_fcm_token';
 const STORES_ROUTE = '/stores';

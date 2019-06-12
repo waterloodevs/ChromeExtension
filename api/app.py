@@ -265,7 +265,6 @@ async def buy_giftcard_async(request):
         quanity = int(order['quantity'])
         total = float(order['total'])
         envelope = order['envelope']
-
         network_id = order['network_id']
         data = kin.decode_transaction(envelope, network_id)
         if data.operation.destination != KINO_PUBLIC_ADDRESS:

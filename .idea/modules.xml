@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/ChromeExtension.iml" filepath="$PROJECT_DIR$/.idea/ChromeExtension.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../tiny_ted_api/.idea/tiny_ted_api.iml" filepath="$PROJECT_DIR$/../tiny_ted_api/.idea/tiny_ted_api.iml" />
     </modules>
   </component>
 </project>
